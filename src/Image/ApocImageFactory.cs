@@ -84,7 +84,7 @@ namespace Fonet.Image
                 ExtractImageData(absoluteURL));
         }
 
-        private static Stream GetImageStream(Uri uri)
+		private static T GetImageStream<T>(Uri uri, Converter<Stream, T> loader)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Fonet.Image
 				{
 					using(Stream stream = response.GetResponseStream())
 					{
-						return stream;
+						return loader(stream);
 					}
 				}
             }
@@ -129,35 +129,25 @@ namespace Fonet.Image
 
         private static byte[] ExtractImageData(Uri absoluteURL)
         {
-            // Otherwise load the image data using a WebRequest.
-            Stream imageStream = GetImageStream(absoluteURL);
-
-            // Read the data stream into a byte array.
-            try
-            {
-				using(MemoryStream ms = new MemoryStream())
+			// Otherwise load the image data using a WebRequest.
+			return GetImageStream<byte[]>(
+				absoluteURL,
+				delegate(Stream imageStream)
 				{
-					byte[] buf = new byte[4096];
-					int numBytesRead = 0;
-
-					// Read contents of JPEG into MemoryStream
-					while((numBytesRead = imageStream.Read(buf, 0, 4096)) != 0)
+					using(MemoryStream ms = new MemoryStream())
 					{
-						ms.Write(buf, 0, numBytesRead);
+						byte[] buf = new byte[4096];
+						int numBytesRead = 0;
+
+						// Read contents of JPEG into MemoryStream
+						while((numBytesRead = imageStream.Read(buf, 0, 4096)) != 0)
+						{
+							ms.Write(buf, 0, numBytesRead);
+						}
+
+						return ms.ToArray();
 					}
-
-					ms.Flush();
-					ms.Close();
-
-					return ms.ToArray();
-				}
-            }
-            finally
-            {
-                imageStream.Flush();
-                imageStream.Close();
-                imageStream = null;
-            }
+				});
         }
     }
 }
