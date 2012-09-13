@@ -49,7 +49,7 @@ namespace Fonet
     /// driver.Render(doc, New FileStream("readme.pdf", FileMode.Create))
     /// </code>
     /// </example>
-    public class FonetDriver
+    public class FonetDriver : IDisposable
     {
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace Fonet
         {
             BaseDirectory = new DirectoryInfo(Path.GetFullPath(Directory.GetCurrentDirectory()));
             Timeout = 100000;
-            ActiveDriver = this;
+			//ActiveDriver = this; // BAD memory loss in multithreaded/thread pool environment if the developer did not set ActiveDriver to null
         }
 
         /// <summary>
@@ -211,10 +211,12 @@ namespace Fonet
             {
                 return activeDriver;
             }
+			/* is now a internal value to prevent memory loss
             set
             {
                 activeDriver = value;
             }
+			*/
         }
 
         /// <summary>
@@ -346,15 +348,21 @@ namespace Fonet
         ///     except for the error event which is wrapped in a 
         ///     <see cref="SystemException"/>.
         /// </remarks>
-        public virtual void Render(XmlDocument doc, Stream outputStream)
-        {
-            StringWriter sw = new StringWriter();
-            XmlTextWriter writer = new XmlTextWriter(sw);
-            doc.Save(writer);
-            writer.Close();
-
-            Render(new StringReader(sw.ToString()), outputStream);
-        }
+		public virtual void Render(XmlDocument doc, Stream outputStream)
+		{
+			using(StringWriter sw = new StringWriter())
+			{
+				using(XmlTextWriter writer = new XmlTextWriter(sw))
+				{
+					doc.Save(writer);
+					writer.Close();
+				}
+				using(StringReader reader = new StringReader(sw.ToString()))
+				{
+					Render(reader, outputStream);
+				}
+			}
+		}
 
         /// <summary>
         ///     Executes the conversion reading the source tree from the input 
@@ -365,7 +373,10 @@ namespace Fonet
         /// <param name="outputStream">Any subclass of the Stream class</param>
         public virtual void Render(TextReader inputReader, Stream outputStream)
         {
-            Render(CreateXmlTextReader(inputReader), outputStream);
+			using(XmlReader reader = CreateXmlTextReader(inputReader))
+			{
+				Render(reader, outputStream);
+			}
         }
 
         /// <summary>
@@ -378,13 +389,19 @@ namespace Fonet
         ///     otherwise it will be overwritten.  Creating a file may 
         ///     generate a variety of exceptions.  See <see cref="FileStream"/>
         ///     for a complete list.<br/>
+		///     CloseOnExit will be ignored to prevent memory leaks
         /// </remarks>
         /// <param name="inputFile">Path to an XSL-FO file</param>
         /// <param name="outputFile">Path to a file</param>
         public virtual void Render(string inputFile, string outputFile)
         {
-            Render(CreateXmlTextReader(inputFile),
-                   new FileStream(outputFile, FileMode.Create, FileAccess.Write));
+			using(XmlReader reader = CreateXmlTextReader(inputFile))
+			{
+				using(Stream stream = new FileStream(outputFile, FileMode.Create, FileAccess.Write)) // yes this stream will always close
+				{
+					Render(reader, stream);
+				}
+			}
         }
 
         /// <summary>
@@ -398,7 +415,10 @@ namespace Fonet
         /// </param>
         public virtual void Render(string inputFile, Stream outputStream)
         {
-            Render(CreateXmlTextReader(inputFile), outputStream);
+			using(XmlReader reader = CreateXmlTextReader(inputFile))
+			{
+				Render(reader, outputStream);
+			}
         }
 
         /// <summary>
@@ -410,7 +430,10 @@ namespace Fonet
         /// <param name="outputStream">Any subclass of the Stream class, e.g. FileStream</param>
         public virtual void Render(Stream inputStream, Stream outputStream)
         {
-            Render(CreateXmlTextReader(inputStream), outputStream);
+			using(XmlReader reader = CreateXmlTextReader(inputStream))
+			{
+				Render(reader, outputStream);
+			}
         }
 
         /// <summary>
@@ -431,39 +454,51 @@ namespace Fonet
         /// </param>
         public void Render(XmlReader inputReader, Stream outputStream)
         {
-            try
-            {
-                // Constructs an area tree renderer and supplies the renderer options
-                PdfRenderer renderer = new PdfRenderer(outputStream);
+			if(activeDriver != null)
+				throw new SystemException("ActiveDriver is set.");
 
-                if (renderOptions != null)
-                {
-                    renderer.Options = renderOptions;
-                }
+			try
+			{
+				activeDriver = this;
 
-                // Create the stream-renderer.
-                StreamRenderer sr = new StreamRenderer(renderer);
+				try
+				{
+					// Constructs an area tree renderer and supplies the renderer options
+					PdfRenderer renderer = new PdfRenderer(outputStream);
 
-                // Create the tree builder and give it the stream renderer.
-                FOTreeBuilder tb = new FOTreeBuilder();
-                tb.SetStreamRenderer(sr);
+					if(renderOptions != null)
+					{
+						renderer.Options = renderOptions;
+					}
 
-                // Setup the mapping between xsl:fo elements and our fo classes.
-                StandardElementMapping sem = new StandardElementMapping();
-                sem.AddToBuilder(tb);
+					// Create the stream-renderer.
+					StreamRenderer sr = new StreamRenderer(renderer);
 
-                // Start processing the xml document.
-                tb.Parse(inputReader);
-            }
-            finally
-            {
-                if (CloseOnExit)
-                {
-                    // Flush and close the output stream
-                    outputStream.Flush();
-                    outputStream.Close();
-                }
-            }
+					// Create the tree builder and give it the stream renderer.
+					FOTreeBuilder tb = new FOTreeBuilder();
+					tb.SetStreamRenderer(sr);
+
+					// Setup the mapping between xsl:fo elements and our fo classes.
+					StandardElementMapping sem = new StandardElementMapping();
+					sem.AddToBuilder(tb);
+
+					// Start processing the xml document.
+					tb.Parse(inputReader);
+				}
+				finally
+				{
+					if(CloseOnExit)
+					{
+						// Flush and close the output stream
+						outputStream.Flush();
+						outputStream.Close();
+					}
+				}
+			}
+			finally
+			{
+				activeDriver = null;
+			}
         }
 
         /// <summary>
@@ -507,6 +542,7 @@ namespace Fonet
             else
             {
                 Console.WriteLine("[WARN] {0}", message);
+				Console.Error.WriteLine("[WARN] {0}", message);
             }
         }
 
@@ -571,5 +607,18 @@ namespace Fonet
 
             return reader;
         }
+
+		#region IDisposable Members
+		public void Dispose()
+		{
+			this.imageHandler = null;
+			this.credentials = null;
+			this.baseDirectory = null;
+			this.renderOptions = null;
+			this.OnError = null;
+			this.OnInfo = null;
+			this.OnWarning = null;
+		}
+		#endregion
     }
 }
