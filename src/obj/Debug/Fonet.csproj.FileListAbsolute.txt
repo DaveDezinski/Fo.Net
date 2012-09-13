@@ -1,0 +1,4 @@
+C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\bin\Debug\Fonet.dll
+C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\bin\Debug\Fonet.pdb
+C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\obj\Debug\Fonet.dll
+C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\obj\Debug\Fonet.pdb
