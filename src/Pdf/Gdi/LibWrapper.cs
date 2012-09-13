@@ -96,6 +96,11 @@ namespace Fonet.Pdf.Gdi {
             IntPtr hdc // handle to DC
             );
 
+		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+		internal static extern bool ReleaseDC(
+			IntPtr hdc // handle to DC
+			);
+
         [DllImport("gdi32.dll", CharSet=CharSet.Auto)]
         internal static extern int EnumFontFamilies(
             IntPtr hdc, // handle to DC

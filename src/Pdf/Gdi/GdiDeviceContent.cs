@@ -35,7 +35,7 @@ namespace Fonet.Pdf.Gdi {
         /// </summary>
         protected virtual void Dispose(bool disposing) {
             if (hDC != IntPtr.Zero) {
-                LibWrapper.DeleteDC(hDC);
+                LibWrapper.ReleaseDC(hDC);
 
                 // Mark as deleted
                 hDC = IntPtr.Zero;
