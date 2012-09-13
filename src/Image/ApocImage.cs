@@ -187,16 +187,13 @@ namespace Fonet.Image
             // This should be a factory when we handle more image types
             if (bitmap.RawFormat.Equals(ImageFormat.Jpeg))
             {
-				using(JpegParser parser = new JpegParser(m_bitmaps))
-				{
-					using(JpegInfo info = parser.Parse())
-					{
-						m_bitsPerPixel = info.BitsPerSample;
-						m_colorSpace = new ColorSpace(info.ColourSpace);
-						width = info.Width;
-						height = info.Height;
-					}
-				}
+                JpegParser parser = new JpegParser(m_bitmaps);
+                JpegInfo info = parser.Parse();
+
+                m_bitsPerPixel = info.BitsPerSample;
+                m_colorSpace = new ColorSpace(info.ColourSpace);
+                width = info.Width;
+                height = info.Height;
 
                 // A "no-op" filter since the JPEG data is already compressed
                 filter = new DctFilter();

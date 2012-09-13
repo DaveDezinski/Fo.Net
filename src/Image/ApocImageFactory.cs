@@ -96,13 +96,9 @@ namespace Fonet.Image
                 // Apply authentication credentials.
                 request.Credentials = FonetDriver.ActiveDriver.Credentials;
 
-				using(WebResponse response = request.GetResponse())
-				{
-					using(Stream stream = response.GetResponseStream())
-					{
-						return stream;
-					}
-				}
+                WebResponse response = request.GetResponse();
+
+                return response.GetResponseStream();
             }
             catch (SecurityException se)
             {
@@ -135,22 +131,21 @@ namespace Fonet.Image
             // Read the data stream into a byte array.
             try
             {
-				using(MemoryStream ms = new MemoryStream())
-				{
-					byte[] buf = new byte[4096];
-					int numBytesRead = 0;
+                MemoryStream ms = new MemoryStream();
+                byte[] buf = new byte[4096];
+                int numBytesRead = 0;
 
-					// Read contents of JPEG into MemoryStream
-					while((numBytesRead = imageStream.Read(buf, 0, 4096)) != 0)
-					{
-						ms.Write(buf, 0, numBytesRead);
-					}
+                // Read contents of JPEG into MemoryStream
+                while ((numBytesRead = imageStream.Read(buf, 0, 4096)) != 0)
+                {
+                    ms.Write(buf, 0, numBytesRead);
+                }
 
-					ms.Flush();
-					ms.Close();
+                ms.Flush();
+                ms.Close();
 
-					return ms.ToArray();
-				}
+                return ms.ToArray();
+
             }
             finally
             {
