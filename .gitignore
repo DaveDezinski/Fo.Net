@@ -44,6 +44,7 @@ local.properties
 # Build results
 [Dd]ebug/
 [Rr]elease/
+obj
 *_i.c
 *_p.c
 *.ilk
@@ -100,7 +101,7 @@ publish
 [Bb]in
 [Oo]bj
 sql
-TestResults
+[Tt]est[Rr]esult*
 *.Cache
 ClientBin
 stylecop.*
