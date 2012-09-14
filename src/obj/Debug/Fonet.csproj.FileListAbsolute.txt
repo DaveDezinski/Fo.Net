@@ -2,3 +2,8 @@ C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\bin\Debug\Fonet.dll
 C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\bin\Debug\Fonet.pdb
 C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\obj\Debug\Fonet.dll
 C:\Users\cjanecek\Documents\GitHub\Fo.Net\src\obj\Debug\Fonet.pdb
+D:\gitsrc\Fo.Net\src\bin\Debug\Fonet.dll
+D:\gitsrc\Fo.Net\src\bin\Debug\Fonet.pdb
+D:\gitsrc\Fo.Net\src\obj\Debug\Fonet.csprojResolveAssemblyReference.cache
+D:\gitsrc\Fo.Net\src\obj\Debug\Fonet.dll
+D:\gitsrc\Fo.Net\src\obj\Debug\Fonet.pdb
