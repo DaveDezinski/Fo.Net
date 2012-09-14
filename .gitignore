@@ -44,7 +44,7 @@ local.properties
 # Build results
 [Dd]ebug/
 [Rr]elease/
-obj
+obj/
 *_i.c
 *_p.c
 *.ilk
