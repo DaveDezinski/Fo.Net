@@ -15,7 +15,7 @@ namespace Fonet.Pdf.Gdi {
         /// </summary>
         public GdiDeviceContent() {
             //this.hDC = LibWrapper.CreateDC("Display", String.Empty, null, IntPtr.Zero);
-            this.hDC = LibWrapper.GetDC(IntPtr.Zero);
+			this.hDC = LibWrapper.GetDC(IntPtr.Zero);
         }
 
         /// <summary>
@@ -34,11 +34,12 @@ namespace Fonet.Pdf.Gdi {
         ///     Delete the device context freeing the associated memory.
         /// </summary>
         protected virtual void Dispose(bool disposing) {
-            if (hDC != IntPtr.Zero) {
-                LibWrapper.DeleteDC(hDC);
+            if (this.hDC != IntPtr.Zero) {
+				LibWrapper.DeleteDC(hDC);
+				//LibWrapper.ReleaseDC(IntPtr.Zero, this.hDC);
 
                 // Mark as deleted
-                hDC = IntPtr.Zero;
+                this.hDC = IntPtr.Zero;
             }
         }
 
