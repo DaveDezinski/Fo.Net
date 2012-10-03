@@ -32,12 +32,10 @@ namespace Fonet.Pdf.Gdi {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (disposing) {
-                if (hFont != IntPtr.Zero) {
-                    //Console.WriteLine("Dispoing of font {0}, {1}pt ({2})", faceName, height, hFont);
-                    LibWrapper.DeleteObject(hFont);
-                    hFont = IntPtr.Zero;
-                }
+            if (hFont != IntPtr.Zero) {
+                //Console.WriteLine("Dispoing of font {0}, {1}pt ({2})", faceName, height, hFont);
+                LibWrapper.DeleteObject(hFont);
+                hFont = IntPtr.Zero;
             }
         }
 
