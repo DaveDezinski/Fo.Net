@@ -25,10 +25,10 @@ The source-code is maintained under the original [Apache 2.0 License](https://fo
 
 
 ## Getting Started
-See wiki: [Getting Started](wiki/Getting-Started)
+See wiki: [Getting Started](../../wiki/Getting-Started)
 
 ## FAQ
-See wiki: [FAQ](wiki/FAQ).
+See wiki: [FAQ](../../wiki/FAQ).
 
 ## History
 
