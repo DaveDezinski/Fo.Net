@@ -5,6 +5,8 @@ namespace Fonet.Image
     using System.Net;
     using System.Reflection;
     using System.Security;
+    using System.Text.RegularExpressions;
+    using System.Web;
 
     /// <summary>
     /// Creates FonetImage instances.
@@ -127,20 +129,23 @@ namespace Fonet.Image
 
         }
 
-        private static byte[] ExtractImageData(Uri absoluteURL)
-        {
+		private static byte[] ExtractImageData(Uri absoluteURL)
+		{
+            if (Regex.IsMatch(absoluteURL.ToString(), @"data:image/[^;]*;base64,"))
+                return GetImageFromDataUri(absoluteURL);
+
 			// Otherwise load the image data using a WebRequest.
 			return GetImageStream<byte[]>(
 				absoluteURL,
 				delegate(Stream imageStream)
 				{
-					using(MemoryStream ms = new MemoryStream())
+					using (MemoryStream ms = new MemoryStream())
 					{
 						byte[] buf = new byte[4096];
 						int numBytesRead = 0;
 
 						// Read contents of JPEG into MemoryStream
-						while((numBytesRead = imageStream.Read(buf, 0, 4096)) != 0)
+						while ((numBytesRead = imageStream.Read(buf, 0, 4096)) != 0)
 						{
 							ms.Write(buf, 0, numBytesRead);
 						}
@@ -148,6 +153,15 @@ namespace Fonet.Image
 						return ms.ToArray();
 					}
 				});
+		}
+
+        private static byte[] GetImageFromDataUri(Uri absoluteURL)
+        {
+            string base64 = HttpUtility.HtmlDecode(absoluteURL.OriginalString);
+            base64 = Regex.Replace(base64, @"data:image/[^;]*;base64,", string.Empty);
+            byte[] buffer = Convert.FromBase64String(base64.Trim());
+
+            return buffer;
         }
     }
 }
