@@ -4,7 +4,7 @@ namespace Fonet.Fo
 {
     internal class FObjMixed : FObj
     {
-        protected TextState ts;
+        protected TextState ts = new TextState();
 
         new internal class Maker : FObj.Maker
         {
