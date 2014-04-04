@@ -58,7 +58,17 @@ namespace Fonet.Fo.Flow
                 area.getIDReferences().InitializeID(id, area);
             }
 
-            AreaContainer container = (AreaContainer)area;
+            AreaContainer container;
+            // Apply fix proposed by claytonrumley
+            // on http://fonet.codeplex.com/workitem/4647
+            if (area is BlockArea)
+            {
+                container = ((BlockArea)area).getNearestAncestorAreaContainer();
+            }
+            else
+            {
+                container = (AreaContainer)area;
+            } 
             if ((this.width == 0) && (this.height == 0))
             {
                 width = right - left;
