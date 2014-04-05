@@ -47,7 +47,14 @@ namespace Fonet.Fo.Flow
                 this.spaceAfter =
                     this.properties.GetProperty("space-after.optimum").GetLength().MValue();
 
-                this.width = this.properties.GetProperty("width").GetLength().MValue();
+                if (this.properties.ContainsKey("content-width"))
+                {
+                    this.width = this.properties.GetProperty("content-width").GetLength().MValue();
+                }
+                else
+                {
+                    this.width = this.properties.GetProperty("width").GetLength().MValue();
+                }
                 this.height = this.properties.GetProperty("height").GetLength().MValue();
 
                 this.src = this.properties.GetProperty("src").GetString();
