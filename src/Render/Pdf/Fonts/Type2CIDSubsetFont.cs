@@ -44,7 +44,8 @@ namespace Fonet.Render.Pdf.Fonts {
             get {
                 // Allocate space for glyph subset
                 int[] subsetWidths = new int[indexMappings.Count];
-
+                // FIX for http://fonet.codeplex.com/workitem/8028
+                EnsureWidthsArray(); // Instead of using property, we just ensure that it's set
                 // Subset indices are returned in ascending order
                 foreach (int subsetIndex in indexMappings.SubsetIndices) {
                     int glyphIndex = indexMappings.GetGlyphIndex(subsetIndex);

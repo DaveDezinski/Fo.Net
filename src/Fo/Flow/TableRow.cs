@@ -249,6 +249,7 @@ namespace Fonet.Fo.Flow
             areaContainer.setParent(area);
 
             areaContainer.setBackground(propMgr.GetBackgroundProps());
+            areaContainer.setBorderAndPadding(propMgr.GetBorderAndPadding());
             areaContainer.start();
 
             areaContainer.setAbsoluteHeight(area.getAbsoluteHeight());

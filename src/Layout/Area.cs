@@ -307,12 +307,16 @@ namespace Fonet.Layout
 
         public AreaContainer getNearestAncestorAreaContainer()
         {
+            // Try to locate the closest parent that can be
+            // casted to AreaContainer
             Area area = this.getParent();
-            while (area != null && !(area is AreaContainer))
+            AreaContainer output = area as AreaContainer;
+            while (area != null && output ==null)
             {
                 area = area.getParent();
+                output = area as AreaContainer;
             }
-            return (AreaContainer)area;
+            return output;
         }
 
         public BorderAndPadding GetBorderAndPadding()

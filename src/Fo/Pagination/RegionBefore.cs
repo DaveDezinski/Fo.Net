@@ -36,13 +36,20 @@ namespace Fonet.Fo.Pagination
         {
             BorderAndPadding bap = propMgr.GetBorderAndPadding();
             BackgroundProps bProps = propMgr.GetBackgroundProps();
+            MarginProps mProps = propMgr.GetMarginProps();
             int extent = this.properties.GetProperty("extent").GetLength().MValue();
-
+            if (extent != 0) allocationRectangleHeight = extent;
             RegionArea area = new RegionArea(
-                allocationRectangleXPosition,
-                allocationRectangleYPosition,
-                allocationRectangleWidth,
-                extent);
+               allocationRectangleXPosition
+                + mProps.marginLeft,
+                                                     allocationRectangleYPosition
+                                                         - mProps.marginTop,
+                                                     allocationRectangleWidth
+                                                         - mProps.marginLeft
+                                                         - mProps.marginRight,
+                                                     allocationRectangleHeight
+                                                         - mProps.marginTop
+                                                         - mProps.marginBottom);
             area.setBackground(bProps);
 
             return area;

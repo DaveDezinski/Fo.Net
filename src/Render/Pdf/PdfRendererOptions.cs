@@ -24,6 +24,10 @@ namespace Fonet.Render.Pdf {
 
         private string title;
 
+        private string creator;
+
+        private string producer;
+
         private StringCollection keywords;
 
         private string ownerPassword;
@@ -88,23 +92,37 @@ namespace Fonet.Render.Pdf {
         ///     Returns the Creator of the PDF document.
         /// </summary>
         /// <value>
-        ///     This method will always return "XSL-FO http://www.w3.org/1999/XSL/Format".
+        ///     This method will return "XSL-FO http://www.w3.org/1999/XSL/Format" if not set;
         /// </value>
-        internal string Creator {
-            get { return "XSL-FO http://www.w3.org/1999/XSL/Format"; }
+        public string Creator
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(creator))
+                {
+                    creator = "XSL-FO http://www.w3.org/1999/XSL/Format";
+                }
+                return creator;
+            }
+            set { creator = value; }
         }
 
         /// <summary>
         ///     Returns the Producer of the PDF document.
         /// </summary>
         /// <value>
-        ///     This method will return the assembly name and version of FO.NET.
+        ///     This method will return the assembly name and version of FO.NET if not set.
         /// </value>
-        internal string Producer {
+        public string Producer {
             get {
-                AssemblyName assemName = Assembly.GetExecutingAssembly().GetName();
-                return assemName.FullName + ", " + assemName.Version;
+                if (string.IsNullOrEmpty(producer))
+                {
+                    AssemblyName assemName = Assembly.GetExecutingAssembly().GetName();
+                    producer = assemName.FullName + ", " + assemName.Version;
+                }
+                return producer;
             }
+            set { producer = value; }
         }
 
         /// <summary>
