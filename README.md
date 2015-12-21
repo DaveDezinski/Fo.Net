@@ -6,7 +6,7 @@ XSL-FO is similar to HTML in that it allows documents to be created in a mark-up
 
 FO.NET processes XML documents that conform to the XSL-FO specification and produces Adobe PDF documents. Typically an XSLT style sheet is used to transform raw XML data into XSL-FO.
 
-FO.NET has been written for the Microsoft .NET Framework and is suitable for use from any .NET compatible language such as C#, VB.NET or C#.
+FO.NET has been written for the Microsoft .NET Framework and is suitable for use from any .NET compatible language such as C#, VB.NET or F#.
 
 ##### Major Features
 - Developed in 100% managed C# code
@@ -19,27 +19,27 @@ FO.NET has been written for the Microsoft .NET Framework and is suitable for use
 
 ## Fork
 
-This repository is a fork of the original [FO.NET](https://fonet.codeplex.com/) project. [@hahmed](https://github.com/hahmed/) was granted permission by the original author ([@griffm](griffm)) to fork the project from CodePlex and maintain accordingly.
+This repository is a fork of the original [FO.NET](https://fonet.codeplex.com/) project. [@hahmed](https://github.com/hahmed) was granted permission by the original author ([@griffm](https://github.com/griffm)) to fork the project from CodePlex and maintain accordingly.
 
 The source-code is maintained under the original [Apache 2.0 License](https://fonet.codeplex.com/license)
 
 
 ## Getting Started
-See wiki: [Getting Started](../../wiki/Getting-Started)
+See wiki: [Getting Started](docs/getting-started.md)
 
 ## FAQ
-See wiki: [FAQ](../../wiki/FAQ).
+See wiki: [FAQ](docs/faq.md).
 
 ## History
 
-For a history of the project, (prior to the GitHub fork), see here:<br/>
-https://fonet.codeplex.com/wikipage?title=History
+For a history of the project, (prior to the GitHub fork), please see [the commit log on the original CodePlex repository](https://fonet.codeplex.com/wikipage?title=History).
 
 ## Acknowledgements
 
-FO.NET includes software developed by the [Apache Software Foundation](http://www.apache.org).
+FO.NET includes software developed by the [Apache Software Foundation](http://www.apache.org).<br>
 Copyright &copy; The Apache Software Foundation. All rights reserved.
 
 Special credit goes to the past and current developers of the FOP project of which FO.NET was originally ported from.
 
-FO.NET includes software based in part on the work of the Independent JPEG Group. Copyright &copy; 1991-1998, Thomas G. Lane.
+FO.NET includes software based in part on the work of the Independent JPEG Group.<br>
+Copyright &copy; 1991-1998, Thomas G. Lane.
