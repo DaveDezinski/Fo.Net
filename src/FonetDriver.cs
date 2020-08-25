@@ -53,31 +53,9 @@ namespace Fonet
     {
 
         /// <summary>
-        ///     Determines if the output stream passed to Render() should
-        ///     be closed upon completion or if a fatal exception occurs.
-        /// </summary>
-        private bool closeOnExit = true;
-
-        /// <summary>
-        ///     Options to supply to the renderer.
-        /// </summary>
-        private PdfRendererOptions renderOptions;
-
-        /// <summary>
         ///     Maps a set of credentials to an internet resource
         /// </summary>
         private CredentialCache credentials;
-
-        /// <summary>
-        ///     The directory that external resources such as images are loaded 
-        ///     from when using relative path references.
-        /// </summary>
-        private DirectoryInfo baseDirectory;
-
-        /// <summary>
-        ///     The timeout used when accessing external resources via a URL.
-        /// </summary>
-        private int timeout;
 
         /// <summary>
         ///     The active driver.
@@ -96,12 +74,6 @@ namespace Fonet
         /// <param name="driver">A reference to the active FonetDriver</param>
         /// <param name="e">Encapsulates a human readable error message</param>
         public delegate void FonetEventHandler(object driver, FonetEventArgs e);
-
-        /// <summary>
-        ///     An optional image handler that can be registered to load image
-        ///     data for external graphic formatting objects.
-        /// </summary>
-        private FonetImageHandler imageHandler;
 
         /// <summary>
         ///     The delegate subscribers must implement to handle the loading 
@@ -186,17 +158,7 @@ namespace Fonet
         ///     Determines if the output stream should be automatically closed 
         ///     upon completion of the render process.
         /// </summary>
-        public bool CloseOnExit
-        {
-            get
-            {
-                return closeOnExit;
-            }
-            set
-            {
-                closeOnExit = value;
-            }
-        }
+        public bool CloseOnExit { get; set; } = true;
 
         /// <summary>
         ///     Gets or sets the active <see cref="FonetDriver"/>.
@@ -211,12 +173,6 @@ namespace Fonet
             {
                 return activeDriver;
             }
-			/* is now an internal value to prevent memory loss
-			 set
-			 {
-				 activeDriver = value;
-			 }
-            */
         }
 
         /// <summary>
@@ -226,17 +182,7 @@ namespace Fonet
         /// <value>
         ///     Defaults to the current working directory.
         /// </value>
-        public DirectoryInfo BaseDirectory
-        {
-            get
-            {
-                return baseDirectory;
-            }
-            set
-            {
-                baseDirectory = value;
-            }
-        }
+        public DirectoryInfo BaseDirectory { get; set; }
 
         /// <summary>
         ///     Gets or sets the handler that is responsible for loading the image
@@ -246,17 +192,7 @@ namespace Fonet
         ///     If null is returned from the image handler, then FO.NET will perform 
         ///     normal processing.
         /// </remarks>
-        public FonetImageHandler ImageHandler
-        {
-            get
-            {
-                return imageHandler;
-            }
-            set
-            {
-                imageHandler = value;
-            }
-        }
+        public FonetImageHandler ImageHandler { get; set; }
 
         /// <summary>
         ///     Gets or sets the time in milliseconds until an HTTP image request 
@@ -268,17 +204,7 @@ namespace Fonet
         /// <value>
         ///     The timeout value in milliseconds
         /// </value>
-        public int Timeout
-        {
-            get
-            {
-                return timeout;
-            }
-            set
-            {
-                timeout = value;
-            }
-        }
+        public int Timeout { get; set; }
 
         /// <summary>
         ///     Gets a reference to a <see cref="System.Net.CredentialCache"/> object 
@@ -315,17 +241,7 @@ namespace Fonet
         /// <summary>
         ///     Options that are passed to the rendering engine.
         /// </summary>
-        public PdfRendererOptions Options
-        {
-            get
-            {
-                return renderOptions;
-            }
-            set
-            {
-                renderOptions = value;
-            }
-        }
+        public PdfRendererOptions Options { get; set; }
 
         /// <summary>
         ///     Executes the conversion reading the source tree from the supplied 
@@ -454,7 +370,7 @@ namespace Fonet
         public void Render(XmlReader inputReader, Stream outputStream)
         {
 			if(activeDriver != null)
-				throw new SystemException("ActiveDriver is set.");
+				throw new InvalidOperationException("ActiveDriver is already set.");
 
 			try
 			{
@@ -465,9 +381,9 @@ namespace Fonet
 					// Constructs an area tree renderer and supplies the renderer options
 					PdfRenderer renderer = new PdfRenderer(outputStream);
 
-					if(renderOptions != null)
+					if(Options != null)
 					{
-						renderer.Options = renderOptions;
+						renderer.Options = Options;
 					}
 
 					// Create the stream-renderer.
@@ -520,7 +436,7 @@ namespace Fonet
             }
             else
             {
-                throw new SystemException(message);
+                throw new InvalidOperationException(message);
             }
         }
 
@@ -610,10 +526,10 @@ namespace Fonet
 		#region IDisposable Members
 		public void Dispose()
 		{
-			this.imageHandler = null;
+			this.ImageHandler = null;
 			this.credentials = null;
-			this.baseDirectory = null;
-			this.renderOptions = null;
+			this.BaseDirectory = null;
+			this.Options = null;
 			this.OnError = null;
 			this.OnInfo = null;
 			this.OnWarning = null;

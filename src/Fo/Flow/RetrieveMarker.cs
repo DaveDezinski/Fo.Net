@@ -1,17 +1,17 @@
 namespace Fonet.Fo.Flow
 {
-    using System.Collections;
+    using System.Collections.Generic;
     using Fonet.Fo.Pagination;
     using Fonet.Fo.Properties;
     using Fonet.Layout;
 
     internal class RetrieveMarker : FObjMixed
     {
-        private string retrieveClassName;
+        private readonly string retrieveClassName;
 
-        private int retrievePosition;
+        private readonly int retrievePosition;
 
-        private int retrieveBoundary;
+        private readonly int retrieveBoundary;
 
         private Marker bestMarker;
 
@@ -85,13 +85,13 @@ namespace Fonet.Fo.Flow
 
         }
 
-        private Status LayoutBestMarker(ArrayList markers, Area area)
+        private Status LayoutBestMarker(List<Marker> markers, Area area)
         {
             if (markers != null)
             {
                 for (int i = markers.Count - 1; i >= 0; i--)
                 {
-                    Marker currentMarker = (Marker)markers[i];
+                    Marker currentMarker = markers[i];
                     if (currentMarker.GetMarkerClassName().Equals(retrieveClassName))
                     {
                         bestMarker = currentMarker;
@@ -105,7 +105,7 @@ namespace Fonet.Fo.Flow
 
         private Marker SearchPage(Page page)
         {
-            ArrayList pageMarkers = page.getMarkers();
+            List<Marker> pageMarkers = page.getMarkers();
             if (pageMarkers.Count == 0)
             {
                 return null;
@@ -115,7 +115,7 @@ namespace Fonet.Fo.Flow
             {
                 for (int i = 0; i < pageMarkers.Count; i++)
                 {
-                    Marker currentMarker = (Marker)pageMarkers[i];
+                    Marker currentMarker = pageMarkers[i];
                     if (currentMarker.GetMarkerClassName().Equals(retrieveClassName))
                     {
                         return currentMarker;
@@ -126,7 +126,7 @@ namespace Fonet.Fo.Flow
             {
                 for (int c = 0; c < pageMarkers.Count; c++)
                 {
-                    Marker currentMarker = (Marker)pageMarkers[c];
+                    Marker currentMarker = pageMarkers[c];
                     if (currentMarker.GetMarkerClassName().Equals(retrieveClassName))
                     {
                         if (currentMarker.GetRegistryArea().isFirst())
@@ -140,7 +140,7 @@ namespace Fonet.Fo.Flow
             {
                 for (int c = pageMarkers.Count - 1; c >= 0; c--)
                 {
-                    Marker currentMarker = (Marker)pageMarkers[c];
+                    Marker currentMarker = pageMarkers[c];
                     if (currentMarker.GetMarkerClassName().Equals(retrieveClassName))
                     {
                         if (currentMarker.GetRegistryArea().isFirst())
@@ -155,7 +155,7 @@ namespace Fonet.Fo.Flow
             {
                 for (int c = pageMarkers.Count - 1; c >= 0; c--)
                 {
-                    Marker currentMarker = (Marker)pageMarkers[c];
+                    Marker currentMarker = pageMarkers[c];
                     if (currentMarker.GetMarkerClassName().Equals(retrieveClassName))
                     {
                         if (currentMarker.GetRegistryArea().isLast())

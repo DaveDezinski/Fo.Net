@@ -7,10 +7,10 @@ namespace Fonet.Util
     {
         private int currentPosition;
         private int newPosition;
-        private int maxPosition;
-        private String str;
-        private String delimiters;
-        private bool retDelims;
+        private readonly int maxPosition;
+        private readonly string str;
+        private readonly string delimiters;
+        private readonly bool retDelims;
 
         /// <summary>
         ///     maxDelimChar stores the value of the delimiter character with 
@@ -102,7 +102,7 @@ namespace Fonet.Util
         {
             if (delimiters == null)
             {
-                throw new NullReferenceException();
+                throw new NullReferenceException("Delimiters is null");
             }
 
             int position = startPos;
@@ -183,13 +183,7 @@ namespace Fonet.Util
         /// otherwise.</returns>
         public bool MoveNext()
         {
-            /*
-             * Temporary store this position and use it in the following
-             * nextToken() method only if the delimiters have'nt been changed in
-             * that nextToken() invocation.
-             */
-            newPosition = SkipDelimiters(currentPosition);
-            return (newPosition < maxPosition);
+            return HasMoreTokens();
         }
 
         /// <summary>
@@ -229,6 +223,7 @@ namespace Fonet.Util
 
         public void Reset()
         {
+            throw new NotImplementedException();
         }
 
         /// <summary>

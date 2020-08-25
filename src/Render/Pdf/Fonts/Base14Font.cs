@@ -25,15 +25,15 @@ namespace Fonet.Render.Pdf.Fonts {
         public static readonly Font Symbol = new Symbol();
         public static readonly Font ZapfDingbats = new ZapfDingbats();
 
-        private string fontName;
-        private string encoding;
-        private int capHeight;
-        private int ascender;
-        private int descender;
-        private int firstChar;
-        private int lastChar;
-        private int[] widths;
-        private CodePointMapping mapping;
+        private readonly string fontName;
+        private readonly string encoding;
+        private readonly int capHeight;
+        private readonly int ascender;
+        private readonly int descender;
+        private readonly int firstChar;
+        private readonly int lastChar;
+        private readonly int[] widths;
+        private readonly CodePointMapping mapping;
 
         /// <summary>
         ///     Class constructor.

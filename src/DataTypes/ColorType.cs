@@ -6,16 +6,11 @@ namespace Fonet.DataTypes
 
     internal class ColorType : ICloneable
     {
-        private float red;
-        private float green;
-        private float blue;
-        private float alpha = 0;
-
         public ColorType(float red, float green, float blue)
         {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
+            this.Red = red;
+            this.Green = green;
+            this.Blue = blue;
         }
 
         public ColorType(string value)
@@ -29,37 +24,37 @@ namespace Fonet.DataTypes
                     if (colorValue.Length == 4)
                     {
                         // note: divide by 15 so F = FF = 1 and so on
-                        red = Int32.Parse(
+                        Red = Int32.Parse(
                             colorValue.Substring(1, 1), NumberStyles.HexNumber) / 15f;
-                        green = Int32.Parse(
+                        Green = Int32.Parse(
                             colorValue.Substring(2, 1), NumberStyles.HexNumber) / 15f;
-                        blue = Int32.Parse(
+                        Blue = Int32.Parse(
                             colorValue.Substring(3, 1), NumberStyles.HexNumber) / 15f;
                     }
                     else if (colorValue.Length == 7)
                     {
                         // note: divide by 255 so FF = 1
-                        red = Int32.Parse(
+                        Red = Int32.Parse(
                             colorValue.Substring(1, 2), NumberStyles.HexNumber) / 255f;
-                        green = Int32.Parse(
+                        Green = Int32.Parse(
                             colorValue.Substring(3, 2), NumberStyles.HexNumber) / 255f;
-                        blue = Int32.Parse(
+                        Blue = Int32.Parse(
                             colorValue.Substring(5, 2), NumberStyles.HexNumber) / 255f;
                     }
                     else
                     {
-                        red = 0;
-                        green = 0;
-                        blue = 0;
+                        Red = 0;
+                        Green = 0;
+                        Blue = 0;
                         FonetDriver.ActiveDriver.FireFonetError(
                             "Unknown colour format. Must be #RGB or #RRGGBB");
                     }
                 }
                 catch (Exception)
                 {
-                    red = 0;
-                    green = 0;
-                    blue = 0;
+                    Red = 0;
+                    Green = 0;
+                    Blue = 0;
                     FonetDriver.ActiveDriver.FireFonetError(
                         "Unknown colour format. Must be #RGB or #RRGGBB");
                 }
@@ -170,57 +165,13 @@ namespace Fonet.DataTypes
             }
         }
 
-        public float Blue
-        {
-            get
-            {
-                return blue;
-            }
+        public float Blue { get; set; }
 
-            set
-            {
-                blue = value;
-            }
-        }
+        public float Green { get; set; }
 
-        public float Green
-        {
-            get
-            {
-                return green;
-            }
+        public float Red { get; set; }
 
-            set
-            {
-                green = value;
-            }
-        }
-
-        public float Red
-        {
-            get
-            {
-                return red;
-            }
-
-            set
-            {
-                red = value;
-            }
-        }
-
-        public float Alpha
-        {
-            get
-            {
-                return alpha;
-            }
-
-            set
-            {
-                alpha = value;
-            }
-        }
+        public float Alpha { get; set; } = 0;
 
         public object Clone()
         {

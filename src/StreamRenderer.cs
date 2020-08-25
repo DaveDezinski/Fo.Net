@@ -1,7 +1,6 @@
 namespace Fonet
 {
-
-    using System.Collections;
+    using System.Collections.Generic;
     using Fonet.Apps;
     using Fonet.DataTypes;
     using Fonet.Fo.Flow;
@@ -27,36 +26,36 @@ namespace Fonet
         /// <summary>
         ///     The renderer being used.
         /// </summary>
-        private PdfRenderer renderer;
+        private readonly PdfRenderer renderer;
 
         /// <summary>
         ///     The formatting results to be handed back to the caller.
         /// </summary>
-        private FormattingResults results = new FormattingResults();
+        private readonly FormattingResults results = new FormattingResults();
 
         /// <summary>
         ///     The FontInfo for this renderer.
         /// </summary>
-        private FontInfo fontInfo = new FontInfo();
+        private readonly FontInfo fontInfo = new FontInfo();
 
         /// <summary>
         ///     The list of pages waiting to be renderered.
         /// </summary>
-        private ArrayList renderQueue = new ArrayList();
+        private readonly List<RenderQueueEntry> renderQueue = new List<RenderQueueEntry>();
 
         /// <summary>
         ///     The current set of IDReferences, passed to the areatrees 
         ///     and pages. This is used by the AreaTree as a single map of 
         ///     all IDs.
         /// </summary>
-        private IDReferences idReferences = new IDReferences();
+        private readonly IDReferences idReferences = new IDReferences();
 
         /// <summary>
         ///     The list of markers.
         /// </summary>
-        private ArrayList documentMarkers;
+        private List<Marker> documentMarkers;
 
-        private ArrayList currentPageSequenceMarkers;
+        private List<Marker> currentPageSequenceMarkers;
         private PageSequence currentPageSequence;
 
         public StreamRenderer(PdfRenderer renderer)
@@ -121,20 +120,20 @@ namespace Fonet
                 currentPageSequence = pageSequence;
                 currentPageSequenceMarkers = null;
             }
-            ArrayList markers = page.getMarkers();
+            List<Marker> markers = page.getMarkers();
             if (markers != null)
             {
                 if (documentMarkers == null)
                 {
-                    documentMarkers = new ArrayList();
+                    documentMarkers = new List<Marker>();
                 }
                 if (currentPageSequenceMarkers == null)
                 {
-                    currentPageSequenceMarkers = new ArrayList();
+                    currentPageSequenceMarkers = new List<Marker>();
                 }
                 for (int i = 0; i < markers.Count; i++)
                 {
-                    Marker marker = (Marker)markers[i];
+                    Marker marker = markers[i];
                     marker.releaseRegistryArea();
                     currentPageSequenceMarkers.Add(marker);
                     documentMarkers.Add(marker);
@@ -177,7 +176,7 @@ namespace Fonet
         {
             while (renderQueue.Count > 0)
             {
-                RenderQueueEntry entry = (RenderQueueEntry)renderQueue[0];
+                RenderQueueEntry entry = renderQueue[0];
                 if ((!force) && (!entry.isResolved()))
                 {
                     break;
@@ -198,14 +197,14 @@ namespace Fonet
             /// <summary>
             ///     The Page that has outstanding ID references.
             /// </summary>
-            private Page page;
+            private readonly Page page;
 
-            private StreamRenderer outer;
+            private readonly StreamRenderer outer;
 
             /// <summary>
             ///     A list of ID references (names).
             /// </summary>
-            private ArrayList unresolvedIdReferences = new ArrayList();
+            private readonly List<object> unresolvedIdReferences = new List<object>();
 
             public RenderQueueEntry(StreamRenderer outer, Page page)
             {
@@ -253,7 +252,7 @@ namespace Fonet
         ///     Auxillary function for retrieving markers.
         /// </summary>
         /// <returns></returns>
-        public ArrayList GetDocumentMarkers()
+        public List<Marker> GetDocumentMarkers()
         {
             return documentMarkers;
         }
@@ -271,7 +270,7 @@ namespace Fonet
         ///     Auxillary function for retrieving markers.
         /// </summary>
         /// <returns></returns>
-        public ArrayList GetCurrentPageSequenceMarkers()
+        public List<Marker> GetCurrentPageSequenceMarkers()
         {
             return currentPageSequenceMarkers;
         }

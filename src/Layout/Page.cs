@@ -1,6 +1,7 @@
 namespace Fonet.Layout
 {
     using System.Collections;
+    using System.Collections.Generic;
     using Fonet.DataTypes;
     using Fonet.Fo.Flow;
     using Fonet.Fo.Pagination;
@@ -8,28 +9,28 @@ namespace Fonet.Layout
 
     internal class Page
     {
-        private int height;
-        private int width;
+        private readonly int height;
+        private readonly int width;
         private BodyAreaContainer body;
         private AreaContainer before;
         private AreaContainer after;
         private AreaContainer start;
         private AreaContainer end;
-        private AreaTree areaTree;
+        private readonly AreaTree areaTree;
         private PageSequence pageSequence;
         protected int pageNumber = 0;
         protected string formattedPageNumber;
         protected ArrayList linkSets = new ArrayList();
-        private ArrayList idList = new ArrayList();
+        private readonly ArrayList idList = new ArrayList();
         private ArrayList footnotes = null;
-        private ArrayList markers = null;
+        private readonly List<Marker> markers = null;
 
         internal Page(AreaTree areaTree, int height, int width)
         {
             this.areaTree = areaTree;
             this.height = height;
             this.width = width;
-            markers = new ArrayList();
+            markers = new List<Marker>();
         }
 
         public IDReferences getIDReferences()
@@ -88,9 +89,9 @@ namespace Fonet.Layout
         {
             body = area;
             area.setPage(this);
-            ((BodyAreaContainer)area).getMainReferenceArea().setPage(this);
-            ((BodyAreaContainer)area).getBeforeFloatReferenceArea().setPage(this);
-            ((BodyAreaContainer)area).getFootnoteReferenceArea().setPage(this);
+            area.getMainReferenceArea().setPage(this);
+            area.getBeforeFloatReferenceArea().setPage(this);
+            area.getFootnoteReferenceArea().setPage(this);
         }
 
         internal void addEnd(AreaContainer area)
@@ -215,7 +216,7 @@ namespace Fonet.Layout
             markers.Add(marker);
         }
 
-        public ArrayList getMarkers()
+        public List<Marker> getMarkers()
         {
             return this.markers;
         }

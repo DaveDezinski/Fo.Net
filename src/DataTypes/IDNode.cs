@@ -4,7 +4,7 @@ namespace Fonet.DataTypes
 
     internal class IDNode
     {
-        private string idValue;
+        private readonly string idValue;
 
         private PdfObjectReference internalLinkGoToPageReference;
 

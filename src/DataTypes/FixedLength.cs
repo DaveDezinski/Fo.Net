@@ -37,6 +37,7 @@ namespace Fonet.DataTypes
             }
             else if (unit.Equals("pt"))
             {
+                // do nothing as value is already in points
             }
             else if (unit.Equals("pc"))
             {

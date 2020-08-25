@@ -19,7 +19,7 @@ namespace Fonet.Layout
         protected int allocationHeight;
         protected int startIndent;
         protected int endIndent;
-        private int placementOffset;
+        private readonly int placementOffset;
         private FontState currentFontState;
         private float red, green, blue;
         private int wrapOption;
@@ -254,16 +254,13 @@ namespace Fonet.Layout
                         while (e.MoveNext())
                         {
                             Box box = (Box)e.Current;
-                            if (box is InlineArea)
+                            if (box is InlineArea inlineArea && ls != null)
                             {
-                                if (ls != null)
-                                {
-                                    Rectangle lr =
-                                        new Rectangle(finalWidth, 0,
-                                                      ((InlineArea)box).getContentWidth(),
-                                                      fontState.FontSize);
-                                    ls.addRect(lr, this, (InlineArea)box);
-                                }
+                                Rectangle lr =
+                                    new Rectangle(finalWidth, 0,
+                                                    inlineArea.getContentWidth(),
+                                                    fontState.FontSize);
+                                ls.addRect(lr, this, (InlineArea)box);
                             }
                             addChild(box);
                         }
@@ -388,16 +385,13 @@ namespace Fonet.Layout
                             while (e.MoveNext())
                             {
                                 Box box = (Box)e.Current;
-                                if (box is InlineArea)
+                                if (box is InlineArea inlineArea && ls != null)
                                 {
-                                    if (ls != null)
-                                    {
-                                        Rectangle lr =
-                                            new Rectangle(finalWidth, 0,
-                                                          ((InlineArea)box).getContentWidth(),
-                                                          fontState.FontSize);
-                                        ls.addRect(lr, this, (InlineArea)box);
-                                    }
+                                    Rectangle lr =
+                                        new Rectangle(finalWidth, 0,
+                                                        inlineArea.getContentWidth(),
+                                                        fontState.FontSize);
+                                    ls.addRect(lr, this, inlineArea);
                                 }
                                 addChild(box);
                             }
@@ -479,7 +473,6 @@ namespace Fonet.Layout
                               spaceWidth, textState, true);
 
                 embeddedLinkStart += wordWidth;
-                wordWidth = 0;
             }
 
             if (overrun)
@@ -681,7 +674,6 @@ namespace Fonet.Layout
 
         public void verticalAlign()
         {
-            int superHeight = -this.placementOffset;
             int maxHeight = this.allocationHeight;
             foreach (Box b in children)
             {
@@ -707,9 +699,6 @@ namespace Fonet.Layout
                         int fh = fontState.Ascender;
                         ia.setYOffset((int)(placementOffset + (2 * fh / 3.0)));
                     }
-                }
-                else
-                {
                 }
             }
             this.allocationHeight = maxHeight;
@@ -1140,11 +1129,11 @@ namespace Fonet.Layout
                     && (isNBSP(currentWord[0])))
                 {
                     // Add an InlineSpace
-                    int spaceWidth = getCharWidth(currentWord[0]);
-                    if (spaceWidth > 0)
+                    int currentSpaceWidth = getCharWidth(currentWord[0]);
+                    if (currentSpaceWidth > 0)
                     {
-                        InlineSpace ispace = new InlineSpace(spaceWidth);
-                        extraw += spaceWidth;
+                        InlineSpace ispace = new InlineSpace(currentSpaceWidth);
+                        extraw += currentSpaceWidth;
                         if (prevUlState)
                         {
                             ispace.setUnderlined(textState.getUnderlined());
@@ -1161,7 +1150,7 @@ namespace Fonet.Layout
                         if (addToPending)
                         {
                             pendingAreas.Add(ispace);
-                            pendingWidth += spaceWidth;
+                            pendingWidth += currentSpaceWidth;
                         }
                         else
                         {

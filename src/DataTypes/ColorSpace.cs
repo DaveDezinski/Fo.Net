@@ -7,7 +7,7 @@ namespace Fonet.DataTypes
         public const int DeviceRgb = 2;
         public const int DeviceCmyk = 3;
 
-        protected int currentColorSpace = -1;
+        protected int currentColorSpace;
 
         private bool hasICCProfile;
         private byte[] iccProfile;

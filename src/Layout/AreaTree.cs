@@ -1,6 +1,7 @@
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Fonet.DataTypes;
+using Fonet.Fo.Flow;
 using Fonet.Fo.Pagination;
 
 namespace Fonet.Layout
@@ -9,7 +10,7 @@ namespace Fonet.Layout
     {
         private FontInfo fontInfo;
 
-        private StreamRenderer streamRenderer;
+        private readonly StreamRenderer streamRenderer;
 
         public AreaTree(StreamRenderer streamRenderer)
         {
@@ -43,7 +44,7 @@ namespace Fonet.Layout
             return streamRenderer.GetIDReferences();
         }
 
-        public ArrayList GetDocumentMarkers()
+        public List<Marker> GetDocumentMarkers()
         {
             return streamRenderer.GetDocumentMarkers();
         }
@@ -53,7 +54,7 @@ namespace Fonet.Layout
             return streamRenderer.GetCurrentPageSequence();
         }
 
-        public ArrayList GetCurrentPageSequenceMarkers()
+        public List<Marker> GetCurrentPageSequenceMarkers()
         {
             return streamRenderer.GetCurrentPageSequenceMarkers();
         }

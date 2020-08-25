@@ -9,25 +9,25 @@ namespace Fonet.DataTypes
 
         private Property conditionality;
 
-        public void SetComponent(string sCmpnName, Property cmpnValue, bool bIsDefault)
+        public void SetComponent(string componentName, Property componentValue, bool isDefault)
         {
-            if (sCmpnName.Equals("length"))
+            if (componentName.Equals("length"))
             {
-                length = cmpnValue;
+                length = componentValue;
             }
-            else if (sCmpnName.Equals("conditionality"))
+            else if (componentName.Equals("conditionality"))
             {
-                conditionality = cmpnValue;
+                conditionality = componentValue;
             }
         }
 
-        public Property GetComponent(string sCmpnName)
+        public Property GetComponent(string componentName)
         {
-            if (sCmpnName.Equals("length"))
+            if (componentName.Equals("length"))
             {
                 return length;
             }
-            else if (sCmpnName.Equals("conditionality"))
+            else if (componentName.Equals("conditionality"))
             {
                 return conditionality;
             }
