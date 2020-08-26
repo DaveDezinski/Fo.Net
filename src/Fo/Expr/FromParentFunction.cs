@@ -10,7 +10,7 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             string propName = args[0].GetString();
             if (propName == null)
@@ -18,7 +18,7 @@ namespace Fonet.Fo.Expr
                 throw new PropertyException("Incorrect parameter to from-parent function");
             }
 
-            return pInfo.getPropertyList().GetFromParentProperty(propName);
+            return propInfo.GetPropertyList().GetFromParentProperty(propName);
         }
 
     }

@@ -9,33 +9,33 @@ namespace Fonet.DataTypes
 
         protected int currentColorSpace;
 
-        private bool hasICCProfile;
-        private byte[] iccProfile;
-        private int numComponents;
+        private bool _hasICCProfile;
+        private byte[] _iccProfile;
+        private int _numComponents;
 
         public ColorSpace(int theColorSpace)
         {
-            this.currentColorSpace = theColorSpace;
-            this.hasICCProfile = false;
-            this.numComponents = this.CalculateNumComponents();
+            currentColorSpace = theColorSpace;
+            _hasICCProfile = false;
+            _numComponents = this.CalculateNumComponents();
         }
 
         public void SetColorSpace(int theColorSpace)
         {
-            this.currentColorSpace = theColorSpace;
-            this.numComponents = this.CalculateNumComponents();
+            currentColorSpace = theColorSpace;
+            _numComponents = this.CalculateNumComponents();
         }
 
         public bool HasICCProfile()
         {
-            return this.hasICCProfile;
+            return this._hasICCProfile;
         }
 
         public byte[] GetICCProfile()
         {
-            if (this.hasICCProfile)
+            if (_hasICCProfile)
             {
-                return this.iccProfile;
+                return _iccProfile;
             }
             else
             {
@@ -45,31 +45,31 @@ namespace Fonet.DataTypes
 
         public void SetICCProfile(byte[] iccProfile)
         {
-            this.iccProfile = iccProfile;
-            this.hasICCProfile = true;
+            _iccProfile = iccProfile;
+            _hasICCProfile = true;
         }
 
         public int GetColorSpace()
         {
-            return this.currentColorSpace;
+            return currentColorSpace;
         }
 
         public int GetNumComponents()
         {
-            return this.numComponents;
+            return _numComponents;
         }
 
         public string GetColorSpacePDFString()
         {
-            if (this.currentColorSpace == DeviceRgb)
+            if (currentColorSpace == DeviceRgb)
             {
                 return "DeviceRGB";
             }
-            else if (this.currentColorSpace == DeviceCmyk)
+            else if (currentColorSpace == DeviceCmyk)
             {
                 return "DeviceCMYK";
             }
-            else if (this.currentColorSpace == DeviceGray)
+            else if (currentColorSpace == DeviceGray)
             {
                 return "DeviceGray";
             }
@@ -81,15 +81,15 @@ namespace Fonet.DataTypes
 
         private int CalculateNumComponents()
         {
-            if (this.currentColorSpace == DeviceGray)
+            if (currentColorSpace == DeviceGray)
             {
                 return 1;
             }
-            else if (this.currentColorSpace == DeviceRgb)
+            else if (currentColorSpace == DeviceRgb)
             {
                 return 3;
             }
-            else if (this.currentColorSpace == DeviceCmyk)
+            else if (currentColorSpace == DeviceCmyk)
             {
                 return 4;
             }

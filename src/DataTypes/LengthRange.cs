@@ -4,43 +4,43 @@ namespace Fonet.DataTypes
 
     internal class LengthRange : ICompoundDatatype
     {
-        private Property minimum;
-        private Property optimum;
-        private Property maximum;
-        private const int MINSET = 1;
-        private const int OPTSET = 2;
-        private const int MAXSET = 4;
-        private int bfSet = 0;
-        private bool bChecked = false;
+        private Property _minimum;
+        private Property _optimum;
+        private Property _maximum;
+        private const int _MINSET = 1;
+        private const int _OPTSET = 2;
+        private const int _MAXSET = 4;
+        private int _bfSet = 0;
+        private bool _bChecked = false;
 
-        public virtual void SetComponent(string sCmpnName, Property cmpnValue,
-                                         bool bIsDefault)
+        public virtual void SetComponent(string componentName, Property componentValue,
+                                         bool isDefault)
         {
-            if (sCmpnName.Equals("minimum"))
+            if (componentName.Equals("minimum"))
             {
-                SetMinimum(cmpnValue, bIsDefault);
+                SetMinimum(componentValue, isDefault);
             }
-            else if (sCmpnName.Equals("optimum"))
+            else if (componentName.Equals("optimum"))
             {
-                SetOptimum(cmpnValue, bIsDefault);
+                SetOptimum(componentValue, isDefault);
             }
-            else if (sCmpnName.Equals("maximum"))
+            else if (componentName.Equals("maximum"))
             {
-                SetMaximum(cmpnValue, bIsDefault);
+                SetMaximum(componentValue, isDefault);
             }
         }
 
-        public virtual Property GetComponent(string sCmpnName)
+        public virtual Property GetComponent(string componentName)
         {
-            if (sCmpnName.Equals("minimum"))
+            if (componentName.Equals("minimum"))
             {
                 return GetMinimum();
             }
-            else if (sCmpnName.Equals("optimum"))
+            else if (componentName.Equals("optimum"))
             {
                 return GetOptimum();
             }
-            else if (sCmpnName.Equals("maximum"))
+            else if (componentName.Equals("maximum"))
             {
                 return GetMaximum();
             }
@@ -52,56 +52,56 @@ namespace Fonet.DataTypes
 
         protected void SetMinimum(Property minimum, bool bIsDefault)
         {
-            this.minimum = minimum;
+            this._minimum = minimum;
             if (!bIsDefault)
             {
-                bfSet |= MINSET;
+                _bfSet |= _MINSET;
             }
         }
 
         protected void SetMaximum(Property max, bool bIsDefault)
         {
-            maximum = max;
+            _maximum = max;
             if (!bIsDefault)
             {
-                bfSet |= MAXSET;
+                _bfSet |= _MAXSET;
             }
         }
 
         protected void SetOptimum(Property opt, bool bIsDefault)
         {
-            optimum = opt;
+            _optimum = opt;
             if (!bIsDefault)
             {
-                bfSet |= OPTSET;
+                _bfSet |= _OPTSET;
             }
         }
 
         private void CheckConsistency()
         {
-            if (bChecked)
+            if (_bChecked)
             {
                 return;
             }
-            bChecked = true;
+            _bChecked = true;
         }
 
         public Property GetMinimum()
         {
             CheckConsistency();
-            return this.minimum;
+            return this._minimum;
         }
 
         public Property GetMaximum()
         {
             CheckConsistency();
-            return this.maximum;
+            return this._maximum;
         }
 
         public Property GetOptimum()
         {
             CheckConsistency();
-            return this.optimum;
+            return this._optimum;
         }
     }
 }

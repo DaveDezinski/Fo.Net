@@ -4,92 +4,92 @@ namespace Fonet.DataTypes
 
     internal class IDNode
     {
-        private readonly string idValue;
+        private readonly string _idValue;
 
-        private PdfObjectReference internalLinkGoToPageReference;
+        private PdfObjectReference _internalLinkGoToPageReference;
 
-        private PdfGoTo internalLinkGoTo;
+        private PdfGoTo _internalLinkGoTo;
 
-        private int pageNumber = -1;
-        private int xPosition = 0;
-        private int yPosition = 0;
+        private int _pageNumber = -1;
+        private int _xPosition = 0;
+        private int _yPosition = 0;
 
         internal IDNode(string idValue)
         {
-            this.idValue = idValue;
+            _idValue = idValue;
         }
 
         internal void SetPageNumber(int number)
         {
-            pageNumber = number;
+            _pageNumber = number;
         }
 
         public string GetPageNumber()
         {
-            return (pageNumber != -1) ? pageNumber.ToString() : null;
+            return (_pageNumber != -1) ? _pageNumber.ToString() : null;
         }
 
         internal void CreateInternalLinkGoTo(PdfObjectId objectId)
         {
-            if (internalLinkGoToPageReference == null)
+            if (_internalLinkGoToPageReference == null)
             {
-                internalLinkGoTo = new PdfGoTo(null, objectId);
+                _internalLinkGoTo = new PdfGoTo(null, objectId);
             }
             else
             {
-                internalLinkGoTo = new PdfGoTo(internalLinkGoToPageReference, objectId);
+                _internalLinkGoTo = new PdfGoTo(_internalLinkGoToPageReference, objectId);
             }
 
-            if (xPosition != 0)
+            if (_xPosition != 0)
             {
-                internalLinkGoTo.X = xPosition;
-                internalLinkGoTo.Y = yPosition;
+                _internalLinkGoTo.X = _xPosition;
+                _internalLinkGoTo.Y = _yPosition;
             }
         }
 
         internal void SetInternalLinkGoToPageReference(PdfObjectReference pageReference)
         {
-            if (internalLinkGoTo != null)
+            if (_internalLinkGoTo != null)
             {
-                internalLinkGoTo.PageReference = pageReference;
+                _internalLinkGoTo.PageReference = pageReference;
             }
             else
             {
-                internalLinkGoToPageReference = pageReference;
+                _internalLinkGoToPageReference = pageReference;
             }
         }
 
         internal string GetInternalLinkGoToReference()
         {
-            return internalLinkGoTo.ObjectId.ObjectNumber + " " + internalLinkGoTo.ObjectId.GenerationNumber + " R";
+            return _internalLinkGoTo.ObjectId.ObjectNumber + " " + _internalLinkGoTo.ObjectId.GenerationNumber + " R";
         }
 
         protected string GetIDValue()
         {
-            return idValue;
+            return _idValue;
         }
 
         internal PdfGoTo GetInternalLinkGoTo()
         {
-            return internalLinkGoTo;
+            return _internalLinkGoTo;
         }
 
         internal bool IsThereInternalLinkGoTo()
         {
-            return internalLinkGoTo != null;
+            return _internalLinkGoTo != null;
         }
 
         internal void SetPosition(int x, int y)
         {
-            if (internalLinkGoTo != null)
+            if (_internalLinkGoTo != null)
             {
-                internalLinkGoTo.X = x;
-                internalLinkGoTo.Y = y;
+                _internalLinkGoTo.X = x;
+                _internalLinkGoTo.Y = y;
             }
             else
             {
-                xPosition = x;
-                yPosition = y;
+                _xPosition = x;
+                _yPosition = y;
             }
         }
     }

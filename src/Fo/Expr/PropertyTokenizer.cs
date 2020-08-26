@@ -25,71 +25,70 @@ namespace Fonet.Fo.Expr
         protected string currentTokenValue = null;
         protected int currentUnitLength = 0;
 
-        private int currentTokenStartIndex = 0;
-        private string expr;
-        private int exprIndex = 0;
-        private int exprLength;
-        private bool recognizeOperator = false;
+        private int _currentTokenStartIndex = 0;
+        private readonly string _expr;
+        private int _exprIndex = 0;
+        private readonly int _exprLength;
+        private bool _recognizeOperator = false;
 
         protected PropertyTokenizer(string s)
         {
-            this.expr = s;
-            this.exprLength = s.Length;
+            this._expr = s;
+            this._exprLength = s.Length;
         }
 
-        protected void next()
+        protected void Next()
         {
             currentTokenValue = null;
-            currentTokenStartIndex = exprIndex;
-            bool currentMaybeOperator = recognizeOperator;
+            _currentTokenStartIndex = _exprIndex;
             bool bSawDecimal;
-            recognizeOperator = true;
-            for (; ; )
+            _recognizeOperator = true;
+            while (true)
             {
-                if (exprIndex >= exprLength)
+                if (_exprIndex >= _exprLength)
                 {
                     currentToken = TOK_EOF;
                     return;
                 }
-                char c = expr[exprIndex++];
+                char c = _expr[_exprIndex++];
                 switch (c)
                 {
                     case ' ':
                     case '\t':
                     case '\r':
                     case '\n':
-                        currentTokenStartIndex = exprIndex;
+                        _currentTokenStartIndex = _exprIndex;
                         break;
                     case ',':
-                        recognizeOperator = false;
+                        _recognizeOperator = false;
                         currentToken = TOK_COMMA;
                         return;
                     case '+':
-                        recognizeOperator = false;
+                        _recognizeOperator = false;
                         currentToken = TOK_PLUS;
                         return;
                     case '-':
-                        recognizeOperator = false;
+                        _recognizeOperator = false;
                         currentToken = TOK_MINUS;
                         return;
                     case '(':
                         currentToken = TOK_LPAR;
-                        recognizeOperator = false;
+                        _recognizeOperator = false;
                         return;
                     case ')':
                         currentToken = TOK_RPAR;
                         return;
                     case '"':
                     case '\'':
-                        exprIndex = expr.IndexOf(c, exprIndex);
-                        if (exprIndex < 0)
+                        _exprIndex = _expr.IndexOf(c, _exprIndex);
+                        if (_exprIndex < 0)
                         {
-                            exprIndex = currentTokenStartIndex + 1;
+                            _exprIndex = _currentTokenStartIndex + 1;
                             throw new PropertyException("missing quote");
                         }
-                        currentTokenValue = expr.Substring(
-                            currentTokenStartIndex + 1,
-                            exprIndex++ - (currentTokenStartIndex + 1));
+                        currentTokenValue = _expr.Substring(
+                            _currentTokenStartIndex + 1,
+                            _exprIndex++ - (_currentTokenStartIndex + 1));
                         currentToken = TOK_LITERAL;
                         return;
                     case '*':
@@ -105,73 +104,77 @@ namespace Fonet.Fo.Expr
                     case '7':
                     case '8':
                     case '9':
-                        scanDigits();
-                        if (exprIndex < exprLength && expr[exprIndex] == '.')
+                        ScanDigits();
+                        if (_exprIndex < _exprLength && _expr[_exprIndex] == '.')
                         {
-                            exprIndex++;
+                            _exprIndex++;
                             bSawDecimal = true;
-                            if (exprIndex < exprLength
-                                && isDigit(expr[exprIndex]))
+                            if (_exprIndex < _exprLength
+                                && IsDigit(_expr[_exprIndex]))
                             {
-                                exprIndex++;
-                                scanDigits();
+                                _exprIndex++;
+                                ScanDigits();
                             }
                         }
                         else
                         {
                             bSawDecimal = false;
                         }
-                        if (exprIndex < exprLength && expr[exprIndex] == '%')
+                        if (_exprIndex < _exprLength && _expr[_exprIndex] == '%')
                         {
-                            exprIndex++;
+                            _exprIndex++;
                             currentToken = TOK_PERCENT;
                         }
                         else
                         {
-                            currentUnitLength = exprIndex;
-                            scanName();
-                            currentUnitLength = exprIndex - currentUnitLength;
-                            currentToken = (currentUnitLength > 0) ? TOK_NUMERIC
-                                : (bSawDecimal ? TOK_FLOAT : TOK_INTEGER);
+                            currentUnitLength = _exprIndex;
+                            ScanName();
+                            currentUnitLength = _exprIndex - currentUnitLength;
+                            if (currentUnitLength > 0)
+                                currentToken = TOK_NUMERIC;
+                            else if (bSawDecimal)
+                                currentToken = TOK_FLOAT;
+                            else
+                                currentToken = TOK_INTEGER;
                         }
-                        currentTokenValue = expr.Substring(currentTokenStartIndex,
-                                                           exprIndex - currentTokenStartIndex);
+                        currentTokenValue = _expr.Substring(_currentTokenStartIndex,
+                                                           _exprIndex - _currentTokenStartIndex);
                         return;
 
                     case '.':
-                        if (exprIndex < exprLength
-                            && isDigit(expr[exprIndex]))
+                        if (_exprIndex < _exprLength
+                            && IsDigit(_expr[_exprIndex]))
                         {
-                            ++exprIndex;
-                            scanDigits();
-                            if (exprIndex < exprLength
-                                && expr[exprIndex] == '%')
+                            ++_exprIndex;
+                            ScanDigits();
+                            if (_exprIndex < _exprLength
+                                && _expr[_exprIndex] == '%')
                             {
-                                exprIndex++;
+                                _exprIndex++;
                                 currentToken = TOK_PERCENT;
                             }
                             else
                             {
-                                currentUnitLength = exprIndex;
-                                scanName();
-                                currentUnitLength = exprIndex - currentUnitLength;
+                                currentUnitLength = _exprIndex;
+                                ScanName();
+                                currentUnitLength = _exprIndex - currentUnitLength;
                                 currentToken = (currentUnitLength > 0) ? TOK_NUMERIC
                                     : TOK_FLOAT;
                             }
-                            currentTokenValue = expr.Substring(currentTokenStartIndex,
-                                                               exprIndex - currentTokenStartIndex);
+                            currentTokenValue = _expr.Substring(_currentTokenStartIndex,
+                                                               _exprIndex - _currentTokenStartIndex);
                             return;
                         }
                         throw new PropertyException("illegal character '.'");
 
                     case '#':
-                        if (exprIndex < exprLength && isHexDigit(expr[exprIndex]))
+                        if (_exprIndex < _exprLength && IsHexDigit(_expr[_exprIndex]))
                         {
-                            ++exprIndex;
-                            scanHexDigits();
+                            ++_exprIndex;
+                            ScanHexDigits();
                             currentToken = TOK_COLORSPEC;
-                            currentTokenValue = expr.Substring(currentTokenStartIndex,
-                                                               exprIndex - currentTokenStartIndex);
+                            currentTokenValue = _expr.Substring(_currentTokenStartIndex,
+                                                               _exprIndex - _currentTokenStartIndex);
                             return;
                         }
                         else
@@ -180,14 +183,14 @@ namespace Fonet.Fo.Expr
                         }
 
                     default:
-                        --exprIndex;
-                        scanName();
-                        if (exprIndex == currentTokenStartIndex)
+                        --_exprIndex;
+                        ScanName();
+                        if (_exprIndex == _currentTokenStartIndex)
                         {
                             throw new PropertyException("illegal character");
                         }
-                        currentTokenValue = expr.Substring(
-                            currentTokenStartIndex, exprIndex - currentTokenStartIndex);
+                        currentTokenValue = _expr.Substring(
+                            _currentTokenStartIndex, _exprIndex - _currentTokenStartIndex);
                         if (currentTokenValue.Equals("mod"))
                         {
                             currentToken = TOK_MOD;
@@ -198,56 +201,56 @@ namespace Fonet.Fo.Expr
                             currentToken = TOK_DIV;
                             return;
                         }
-                        if (followingParen())
+                        if (FollowingParen())
                         {
                             currentToken = TOK_FUNCTION_LPAR;
-                            recognizeOperator = false;
+                            _recognizeOperator = false;
                         }
                         else
                         {
                             currentToken = TOK_NCNAME;
-                            recognizeOperator = false;
+                            _recognizeOperator = false;
                         }
                         return;
                 }
             }
         }
 
-        private void scanName()
+        private void ScanName()
         {
-            if (exprIndex < exprLength && isNameStartChar(expr[exprIndex]))
+            if (_exprIndex < _exprLength && IsNameStartChar(_expr[_exprIndex]))
             {
-                while (++exprIndex < exprLength && isNameChar(expr[exprIndex]))
+                while (++_exprIndex < _exprLength && IsNameChar(_expr[_exprIndex]))
                 {
-                    ;
+                    // Do nothing
                 }
             }
         }
 
-        private void scanDigits()
+        private void ScanDigits()
         {
-            while (exprIndex < exprLength && isDigit(expr[exprIndex]))
+            while (_exprIndex < _exprLength && IsDigit(_expr[_exprIndex]))
             {
-                exprIndex++;
+                _exprIndex++;
             }
         }
 
-        private void scanHexDigits()
+        private void ScanHexDigits()
         {
-            while (exprIndex < exprLength && isHexDigit(expr[exprIndex]))
+            while (_exprIndex < _exprLength && IsHexDigit(_expr[_exprIndex]))
             {
-                exprIndex++;
+                _exprIndex++;
             }
         }
 
-        private bool followingParen()
+        private bool FollowingParen()
         {
-            for (int i = exprIndex; i < exprLength; i++)
+            for (int i = _exprIndex; i < _exprLength; i++)
             {
-                switch (expr[i])
+                switch (_expr[i])
                 {
                     case '(':
-                        exprIndex = i + 1;
+                        _exprIndex = i + 1;
                         return true;
                     case ' ':
                     case '\r':
@@ -261,22 +264,22 @@ namespace Fonet.Fo.Expr
             return false;
         }
 
-        private const string nameStartChars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private const string nameChars = ".-0123456789";
-        private const string digits = "0123456789";
-        private const string hexchars = digits + "abcdefABCDEF";
+        private const string _nameStartChars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string _nameChars = ".-0123456789";
+        private const string _digits = "0123456789";
+        private const string _hexchars = _digits + "abcdefABCDEF";
 
-        private static bool isDigit(char c)
+        private static bool IsDigit(char c)
         {
-            return digits.IndexOf(c) >= 0;
+            return _digits.IndexOf(c) >= 0;
         }
 
-        private static bool isHexDigit(char c)
+        private static bool IsHexDigit(char c)
         {
-            return hexchars.IndexOf(c) >= 0;
+            return _hexchars.IndexOf(c) >= 0;
         }
 
-        private static bool isSpace(char c)
+        private static bool IsSpace(char c)
         {
             switch (c)
             {
@@ -289,14 +292,14 @@ namespace Fonet.Fo.Expr
             return false;
         }
 
-        private static bool isNameStartChar(char c)
+        private static bool IsNameStartChar(char c)
         {
-            return nameStartChars.IndexOf(c) >= 0 || c >= 0x80;
+            return _nameStartChars.IndexOf(c) >= 0 || c >= 0x80;
         }
 
-        private static bool isNameChar(char c)
+        private static bool IsNameChar(char c)
         {
-            return nameStartChars.IndexOf(c) >= 0 || nameChars.IndexOf(c) >= 0 || c >= 0x80;
+            return _nameStartChars.IndexOf(c) >= 0 || _nameChars.IndexOf(c) >= 0 || c >= 0x80;
         }
     }
 }

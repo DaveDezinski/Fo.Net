@@ -4,9 +4,6 @@ namespace Fonet.DataTypes
 {
     internal class Space : LengthRange
     {
-        private Property precedence;
-        private Property conditionality;
-
         public override void SetComponent(string componentName, Property componentValue, bool isDefault)
         {
             if (componentName.Equals("precedence"))
@@ -39,29 +36,9 @@ namespace Fonet.DataTypes
             }
         }
 
-        public Property Conditionality
-        {
-            get
-            {
-                return conditionality;
-            }
-            set
-            {
-                conditionality = value;
-            }
-        }
+        public Property Conditionality { get; set; }
 
-        public Property Precedence
-        {
-            get
-            {
-                return precedence;
-            }
-            set
-            {
-                precedence = value;
-            }
-        }
+        public Property Precedence { get; set; }
 
     }
 }

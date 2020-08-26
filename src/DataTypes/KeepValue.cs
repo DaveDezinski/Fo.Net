@@ -6,28 +6,28 @@ namespace Fonet.DataTypes
         public const string KEEP_WITH_AUTO = "KEEP_WITH_AUTO";
         public const string KEEP_WITH_VALUE = "KEEP_WITH_VALUE";
 
-        private string type = KEEP_WITH_AUTO;
-        private int value = 0;
+        private readonly string _type;
+        private readonly int _value = 0;
 
-        public KeepValue(string type, int val)
+        public KeepValue(string type, int value)
         {
-            this.type = type;
-            this.value = val;
+            this._type = type;
+            this._value = value;
         }
 
         public int GetValue()
         {
-            return value;
+            return _value;
         }
 
         public string GetKeepType()
         {
-            return type;
+            return _type;
         }
 
         public override string ToString()
         {
-            return type;
+            return _type;
         }
     }
 }

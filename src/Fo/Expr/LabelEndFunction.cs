@@ -13,14 +13,14 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             Length distance =
-                pInfo.getPropertyList().GetProperty("provisional-distance-between-starts").GetLength();
+                propInfo.GetPropertyList().GetProperty("provisional-distance-between-starts").GetLength();
             Length separation =
-                pInfo.getPropertyList().GetNearestSpecifiedProperty("provisional-label-separation").GetLength();
+                propInfo.GetPropertyList().GetNearestSpecifiedProperty("provisional-label-separation").GetLength();
 
-            FObj item = pInfo.getFO();
+            FObj item = propInfo.GetFO();
             while (item != null && !(item is ListItem))
             {
                 item = item.getParent();
@@ -33,7 +33,7 @@ namespace Fonet.Fo.Expr
 
             LinearCombinationLength labelEnd = new LinearCombinationLength();
 
-            LengthBase bse = new LengthBase(item, pInfo.getPropertyList(),
+            LengthBase bse = new LengthBase(item, propInfo.GetPropertyList(),
                                             LengthBase.CONTAINING_BOX);
             PercentLength refWidth = new PercentLength(1.0, bse);
 

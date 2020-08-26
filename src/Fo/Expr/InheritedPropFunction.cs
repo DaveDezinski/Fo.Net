@@ -10,14 +10,14 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             string propName = args[0].GetString();
             if (propName == null)
             {
                 throw new PropertyException("Incorrect parameter to inherited-property-value function");
             }
-            return pInfo.getPropertyList().GetInheritedProperty(propName);
+            return propInfo.GetPropertyList().GetInheritedProperty(propName);
         }
 
     }

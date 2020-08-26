@@ -10,7 +10,7 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             string propName = args[0].GetString();
             if (propName == null)

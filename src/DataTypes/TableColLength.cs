@@ -4,26 +4,26 @@ namespace Fonet.DataTypes
 {
     internal class TableColLength : Length
     {
-        private double tcolUnits;
+        private readonly double _tcolUnits;
 
         public TableColLength(double tcolUnits)
         {
-            this.tcolUnits = tcolUnits;
+            this._tcolUnits = tcolUnits;
         }
 
         public override double GetTableUnits()
         {
-            return tcolUnits;
+            return _tcolUnits;
         }
 
-        public override void ResolveTableUnit(double mpointsPerUnit)
+        public override void ResolveTableUnit(double tableUnit)
         {
-            SetComputedValue((int)(tcolUnits * mpointsPerUnit));
+            SetComputedValue((int)(_tcolUnits * tableUnit));
         }
 
         public override string ToString()
         {
-            return (tcolUnits.ToString() + " table-column-units");
+            return (_tcolUnits.ToString() + " table-column-units");
         }
 
         public override Numeric AsNumeric()

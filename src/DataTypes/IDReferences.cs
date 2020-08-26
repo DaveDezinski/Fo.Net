@@ -7,14 +7,16 @@ namespace Fonet.DataTypes
 
     internal class IDReferences
     {
-        private Hashtable idReferences, idValidation, idUnvalidated;
+        private readonly Hashtable _idReferences;
+        private readonly Hashtable _idValidation;
+        private readonly Hashtable _idUnvalidated;
         private const int ID_PADDING = 5000;
 
         public IDReferences()
         {
-            idReferences = new Hashtable();
-            idValidation = new Hashtable();
-            idUnvalidated = new Hashtable();
+            _idReferences = new Hashtable();
+            _idValidation = new Hashtable();
+            _idUnvalidated = new Hashtable();
         }
 
         public void InitializeID(string id, Area area)
@@ -25,7 +27,7 @@ namespace Fonet.DataTypes
 
         public void CreateID(string id)
         {
-            if (id != null && !id.Equals(""))
+            if (!string.IsNullOrEmpty(id))
             {
                 if (DoesUnvalidatedIDExist(id))
                 {
@@ -48,34 +50,31 @@ namespace Fonet.DataTypes
 
         public void CreateUnvalidatedID(string id)
         {
-            if (id != null && !id.Equals(""))
+            if (!string.IsNullOrEmpty(id) && !doesIDExist(id))
             {
-                if (!doesIDExist(id))
-                {
-                    createNewId(id);
-                    AddToUnvalidatedIdList(id);
-                }
+                createNewId(id);
+                AddToUnvalidatedIdList(id);
             }
         }
 
         public void AddToUnvalidatedIdList(string id)
         {
-            idUnvalidated[id] = "";
+            _idUnvalidated[id] = "";
         }
 
         public void RemoveFromUnvalidatedIDList(string id)
         {
-            idUnvalidated.Remove(id);
+            _idUnvalidated.Remove(id);
         }
 
         public bool DoesUnvalidatedIDExist(string id)
         {
-            return idUnvalidated.ContainsKey(id);
+            return _idUnvalidated.ContainsKey(id);
         }
 
         public void ConfigureID(string id, Area area)
         {
-            if (id != null && !id.Equals(""))
+            if (!string.IsNullOrEmpty(id))
             {
                 setPosition(id,
                             area.getPage().getBody().getXPosition()
@@ -89,28 +88,28 @@ namespace Fonet.DataTypes
 
         public void AddToIdValidationList(string id)
         {
-            idValidation[id] = "";
+            _idValidation[id] = "";
         }
 
         public void RemoveFromIdValidationList(string id)
         {
-            idValidation.Remove(id);
+            _idValidation.Remove(id);
         }
 
         public void RemoveID(string id)
         {
-            idReferences.Remove(id);
+            _idReferences.Remove(id);
         }
 
         public bool IsEveryIdValid()
         {
-            return (idValidation.Count == 0);
+            return (_idValidation.Count == 0);
         }
 
         public string GetInvalidIds()
         {
             StringBuilder list = new StringBuilder();
-            foreach (object o in idValidation.Keys)
+            foreach (object o in _idValidation.Keys)
             {
                 list.Append("\n\"");
                 list.Append(o.ToString());
@@ -121,24 +120,24 @@ namespace Fonet.DataTypes
 
         public bool doesIDExist(string id)
         {
-            return idReferences.ContainsKey(id);
+            return _idReferences.ContainsKey(id);
         }
 
         public bool doesGoToReferenceExist(string id)
         {
-            IDNode node = (IDNode)idReferences[id];
+            IDNode node = (IDNode)_idReferences[id];
             return node.IsThereInternalLinkGoTo();
         }
 
         public PdfGoTo getInternalLinkGoTo(string id)
         {
-            IDNode node = (IDNode)idReferences[id];
+            IDNode node = (IDNode)_idReferences[id];
             return node.GetInternalLinkGoTo();
         }
 
         public PdfGoTo createInternalLinkGoTo(string id, PdfObjectId objectId)
         {
-            IDNode node = (IDNode)idReferences[id];
+            IDNode node = (IDNode)_idReferences[id];
             node.CreateInternalLinkGoTo(objectId);
             return node.GetInternalLinkGoTo();
         }
@@ -146,19 +145,18 @@ namespace Fonet.DataTypes
         public void createNewId(string id)
         {
             IDNode node = new IDNode(id);
-            idReferences[id] = node;
+            _idReferences[id] = node;
         }
 
         public PdfGoTo getPDFGoTo(string id)
         {
-            IDNode node = (IDNode)idReferences[id];
-            return node.GetInternalLinkGoTo();
+            return getInternalLinkGoTo(id);
         }
 
         public void setInternalGoToPageReference(string id,
                                                  PdfObjectReference pageReference)
         {
-            IDNode node = (IDNode)idReferences[id];
+            IDNode node = (IDNode)_idReferences[id];
             if (node != null)
             {
                 node.SetInternalLinkGoToPageReference(pageReference);
@@ -167,7 +165,7 @@ namespace Fonet.DataTypes
 
         public void setPageNumber(string id, int pageNumber)
         {
-            IDNode node = (IDNode)idReferences[id];
+            IDNode node = (IDNode)_idReferences[id];
             node.SetPageNumber(pageNumber);
         }
 
@@ -175,7 +173,7 @@ namespace Fonet.DataTypes
         {
             if (doesIDExist(id))
             {
-                IDNode node = (IDNode)idReferences[id];
+                IDNode node = (IDNode)_idReferences[id];
                 return node.GetPageNumber();
             }
             else
@@ -187,13 +185,13 @@ namespace Fonet.DataTypes
 
         public void setPosition(string id, int x, int y)
         {
-            IDNode node = (IDNode)idReferences[id];
+            IDNode node = (IDNode)_idReferences[id];
             node.SetPosition(x, y);
         }
 
         public ICollection getInvalidElements()
         {
-            return idValidation.Keys;
+            return _idValidation.Keys;
         }
     }
 }

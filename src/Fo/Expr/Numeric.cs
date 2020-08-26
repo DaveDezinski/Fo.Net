@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Fonet.DataTypes;
 
 namespace Fonet.Fo.Expr
@@ -10,22 +10,22 @@ namespace Fonet.Fo.Expr
         public const int PC_LENGTH = 2;
         public const int TCOL_LENGTH = 4;
 
-        private int valType;
-        private double absValue;
-        private double pcValue;
-        private IPercentBase pcBase = null;
-        private double tcolValue;
-        private int dim;
+        private readonly int _valType;
+        private readonly double _absValue;
+        private readonly double _pcValue;
+        private readonly IPercentBase _pcBase = null;
+        private readonly double _tcolValue;
+        private readonly int _dim;
 
         protected Numeric(int valType, double absValue, double pcValue,
                           double tcolValue, int dim, IPercentBase pcBase)
         {
-            this.valType = valType;
-            this.absValue = absValue;
-            this.pcValue = pcValue;
-            this.tcolValue = tcolValue;
-            this.dim = dim;
-            this.pcBase = pcBase;
+            this._valType = valType;
+            this._absValue = absValue;
+            this._pcValue = pcValue;
+            this._tcolValue = tcolValue;
+            this._dim = dim;
+            this._pcBase = pcBase;
         }
 
         public Numeric(decimal num) :
@@ -39,7 +39,7 @@ namespace Fonet.Fo.Expr
         }
 
         public Numeric(PercentLength pclen) :
-            this(PC_LENGTH, 0.0, pclen.value(), 0.0, 1, pclen.BaseLength)
+            this(PC_LENGTH, 0.0, pclen.Value(), 0.0, 1, pclen.BaseLength)
         {
         }
 
@@ -48,26 +48,26 @@ namespace Fonet.Fo.Expr
         {
         }
 
-        public Length asLength()
+        public Length AsLength()
         {
-            if (dim == 1)
+            if (_dim == 1)
             {
-                ArrayList len = new ArrayList(3);
-                if ((valType & ABS_LENGTH) != 0)
+                List<Length> len = new List<Length>(3);
+                if ((_valType & ABS_LENGTH) != 0)
                 {
-                    len.Add(new FixedLength((int)absValue));
+                    len.Add(new FixedLength((int)_absValue));
                 }
-                if ((valType & PC_LENGTH) != 0)
+                if ((_valType & PC_LENGTH) != 0)
                 {
-                    len.Add(new PercentLength(pcValue, pcBase));
+                    len.Add(new PercentLength(_pcValue, _pcBase));
                 }
-                if ((valType & TCOL_LENGTH) != 0)
+                if ((_valType & TCOL_LENGTH) != 0)
                 {
-                    len.Add(new TableColLength(tcolValue));
+                    len.Add(new TableColLength(_tcolValue));
                 }
                 if (len.Count == 1)
                 {
-                    return (Length)len[0];
+                    return len[0];
                 }
                 else
                 {
@@ -80,27 +80,27 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public Number asNumber()
+        public Number AsNumber()
         {
-            return new Number(asDouble());
+            return new Number(AsDouble());
         }
 
-        public Double asDouble()
+        public Double AsDouble()
         {
-            if (dim == 0 && valType == ABS_LENGTH)
+            if (_dim == 0 && _valType == ABS_LENGTH)
             {
-                return absValue;
+                return _absValue;
             }
             else
             {
-                throw new Exception("cannot make number if dimension != 0");
+                throw new InvalidOperationException("cannot make number if dimension != 0");
             }
         }
 
-        private bool isMixedType()
+        private bool IsMixedType()
         {
             int ntype = 0;
-            for (int t = valType; t != 0; t = t >> 1)
+            for (int t = _valType; t != 0; t >>= 1)
             {
                 if ((t & 1) != 0)
                 {
@@ -110,15 +110,15 @@ namespace Fonet.Fo.Expr
             return ntype > 1;
         }
 
-        public Numeric subtract(Numeric op)
+        public Numeric Subtract(Numeric op)
         {
-            if (dim == op.dim)
+            if (_dim == op._dim)
             {
-                IPercentBase npcBase = ((valType & PC_LENGTH) != 0) ? pcBase
-                    : op.pcBase;
-                return new Numeric(valType | op.valType, absValue - op.absValue,
-                                   pcValue - op.pcValue,
-                                   tcolValue - op.tcolValue, dim, npcBase);
+                IPercentBase npcBase = ((_valType & PC_LENGTH) != 0) ? _pcBase
+                    : op._pcBase;
+                return new Numeric(_valType | op._valType, _absValue - op._absValue,
+                                   _pcValue - op._pcValue,
+                                   _tcolValue - op._tcolValue, _dim, npcBase);
             }
             else
             {
@@ -126,15 +126,15 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public Numeric add(Numeric op)
+        public Numeric Add(Numeric op)
         {
-            if (dim == op.dim)
+            if (_dim == op._dim)
             {
-                IPercentBase npcBase = ((valType & PC_LENGTH) != 0) ? pcBase
-                    : op.pcBase;
-                return new Numeric(valType | op.valType, absValue + op.absValue,
-                                   pcValue + op.pcValue,
-                                   tcolValue + op.tcolValue, dim, npcBase);
+                IPercentBase npcBase = ((_valType & PC_LENGTH) != 0) ? _pcBase
+                    : op._pcBase;
+                return new Numeric(_valType | op._valType, _absValue + op._absValue,
+                                   _pcValue + op._pcValue,
+                                   _tcolValue + op._tcolValue, _dim, npcBase);
             }
             else
             {
@@ -142,27 +142,27 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public Numeric multiply(Numeric op)
+        public Numeric Multiply(Numeric op)
         {
-            if (dim == 0)
+            if (_dim == 0)
             {
-                return new Numeric(op.valType, absValue * op.absValue,
-                                   absValue * op.pcValue,
-                                   absValue * op.tcolValue, op.dim, op.pcBase);
+                return new Numeric(op._valType, _absValue * op._absValue,
+                                   _absValue * op._pcValue,
+                                   _absValue * op._tcolValue, op._dim, op._pcBase);
             }
-            else if (op.dim == 0)
+            else if (op._dim == 0)
             {
-                double opval = op.absValue;
-                return new Numeric(valType, opval * absValue, opval * pcValue,
-                                   opval * tcolValue, dim, pcBase);
+                double opval = op._absValue;
+                return new Numeric(_valType, opval * _absValue, opval * _pcValue,
+                                   opval * _tcolValue, _dim, _pcBase);
             }
-            else if (valType == op.valType && !isMixedType())
+            else if (_valType == op._valType && !IsMixedType())
             {
-                IPercentBase npcBase = ((valType & PC_LENGTH) != 0) ? pcBase
-                    : op.pcBase;
-                return new Numeric(valType, absValue * op.absValue,
-                                   pcValue * op.pcValue,
-                                   tcolValue * op.tcolValue, dim + op.dim,
+                IPercentBase npcBase = ((_valType & PC_LENGTH) != 0) ? _pcBase
+                    : op._pcBase;
+                return new Numeric(_valType, _absValue * op._absValue,
+                                   _pcValue * op._pcValue,
+                                   _tcolValue * op._tcolValue, _dim + op._dim,
                                    npcBase);
             }
             else
@@ -171,29 +171,29 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public Numeric divide(Numeric op)
+        public Numeric Divide(Numeric op)
         {
-            if (dim == 0)
+            if (_dim == 0)
             {
-                return new Numeric(op.valType, absValue / op.absValue,
-                                   absValue / op.pcValue,
-                                   absValue / op.tcolValue, -op.dim, op.pcBase);
+                return new Numeric(op._valType, _absValue / op._absValue,
+                                   _absValue / op._pcValue,
+                                   _absValue / op._tcolValue, -op._dim, op._pcBase);
             }
-            else if (op.dim == 0)
+            else if (op._dim == 0)
             {
-                double opval = op.absValue;
-                return new Numeric(valType, absValue / opval, pcValue / opval,
-                                   tcolValue / opval, dim, pcBase);
+                double opval = op._absValue;
+                return new Numeric(_valType, _absValue / opval, _pcValue / opval,
+                                   _tcolValue / opval, _dim, _pcBase);
             }
-            else if (valType == op.valType && !isMixedType())
+            else if (_valType == op._valType && !IsMixedType())
             {
-                IPercentBase npcBase = ((valType & PC_LENGTH) != 0) ? pcBase
-                    : op.pcBase;
-                return new Numeric(valType,
-                                   (valType == ABS_LENGTH ? absValue / op.absValue : 0.0),
-                                   (valType == PC_LENGTH ? pcValue / op.pcValue : 0.0),
-                                   (valType == TCOL_LENGTH ? tcolValue / op.tcolValue : 0.0),
-                                   dim - op.dim, npcBase);
+                IPercentBase npcBase = ((_valType & PC_LENGTH) != 0) ? _pcBase
+                    : op._pcBase;
+                return new Numeric(_valType,
+                                   (_valType == ABS_LENGTH ? _absValue / op._absValue : 0.0),
+                                   (_valType == PC_LENGTH ? _pcValue / op._pcValue : 0.0),
+                                   (_valType == TCOL_LENGTH ? _tcolValue / op._tcolValue : 0.0),
+                                   _dim - op._dim, npcBase);
             }
             else
             {
@@ -201,28 +201,28 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public Numeric abs()
+        public Numeric Abs()
         {
-            return new Numeric(valType, Math.Abs(absValue), Math.Abs(pcValue),
-                               Math.Abs(tcolValue), dim, pcBase);
+            return new Numeric(_valType, Math.Abs(_absValue), Math.Abs(_pcValue),
+                               Math.Abs(_tcolValue), _dim, _pcBase);
         }
 
-        public Numeric max(Numeric op)
+        public Numeric Max(Numeric op)
         {
             double rslt = 0.0;
-            if (dim == op.dim && valType == op.valType && !isMixedType())
+            if (_dim == op._dim && _valType == op._valType && !IsMixedType())
             {
-                if (valType == ABS_LENGTH)
+                if (_valType == ABS_LENGTH)
                 {
-                    rslt = absValue - op.absValue;
+                    rslt = _absValue - op._absValue;
                 }
-                else if (valType == PC_LENGTH)
+                else if (_valType == PC_LENGTH)
                 {
-                    rslt = pcValue - op.pcValue;
+                    rslt = _pcValue - op._pcValue;
                 }
-                else if (valType == TCOL_LENGTH)
+                else if (_valType == TCOL_LENGTH)
                 {
-                    rslt = tcolValue - op.tcolValue;
+                    rslt = _tcolValue - op._tcolValue;
                 }
                 if (rslt > 0.0)
                 {
@@ -236,22 +236,22 @@ namespace Fonet.Fo.Expr
             throw new PropertyException("Arguments to max() must have same dimension and value type.");
         }
 
-        public Numeric min(Numeric op)
+        public Numeric Min(Numeric op)
         {
             double rslt = 0.0;
-            if (dim == op.dim && valType == op.valType && !isMixedType())
+            if (_dim == op._dim && _valType == op._valType && !IsMixedType())
             {
-                if (valType == ABS_LENGTH)
+                if (_valType == ABS_LENGTH)
                 {
-                    rslt = absValue - op.absValue;
+                    rslt = _absValue - op._absValue;
                 }
-                else if (valType == PC_LENGTH)
+                else if (_valType == PC_LENGTH)
                 {
-                    rslt = pcValue - op.pcValue;
+                    rslt = _pcValue - op._pcValue;
                 }
-                else if (valType == TCOL_LENGTH)
+                else if (_valType == TCOL_LENGTH)
                 {
-                    rslt = tcolValue - op.tcolValue;
+                    rslt = _tcolValue - op._tcolValue;
                 }
                 if (rslt > 0.0)
                 {

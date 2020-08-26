@@ -35,19 +35,22 @@ namespace Fonet.Fo.Flow
             MarginInlineProps mProps = propMgr.GetMarginInlineProps();
             RelativePositionProps mRelProps = propMgr.GetRelativePositionProps();
 
-            if (!(destination =
-                this.properties.GetProperty("internal-destination").GetString()).Equals(""))
+            destination = this.properties.GetProperty("internal-destination").GetString();
+            if (!string.IsNullOrEmpty(destination))
             {
                 linkType = LinkSet.INTERNAL;
             }
-            else if (!(destination =
-                this.properties.GetProperty("external-destination").GetString()).Equals(""))
-            {
-                linkType = LinkSet.EXTERNAL;
-            }
             else
             {
-                throw new FonetException("internal-destination or external-destination must be specified in basic-link");
+                destination = this.properties.GetProperty("external-destination").GetString();
+                if (!string.IsNullOrEmpty(destination))
+                {
+                    linkType = LinkSet.EXTERNAL;
+                }
+                else
+                {
+                    throw new FonetException("internal-destination or external-destination must be specified in basic-link");
+                }
             }
 
             if (this.marker == MarkerStart)
@@ -75,8 +78,8 @@ namespace Fonet.Fo.Flow
                 FONode fo = (FONode)children[i];
                 fo.SetLinkSet(ls);
 
-                Status status;
-                if ((status = fo.Layout(area)).isIncomplete())
+                Status status = fo.Layout(area);
+                if (status.isIncomplete())
                 {
                     this.marker = i;
                     return status;

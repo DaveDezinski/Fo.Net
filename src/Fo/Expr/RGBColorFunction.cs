@@ -3,7 +3,7 @@ using Fonet.DataTypes;
 
 namespace Fonet.Fo.Expr
 {
-    internal class RGBColorFunction : FunctionBase
+    internal class RgbColorFunction : FunctionBase
     {
         public override int NumArgs
         {
@@ -15,10 +15,10 @@ namespace Fonet.Fo.Expr
 
         public override IPercentBase GetPercentBase()
         {
-            return new RGBPercentBase();
+            return new RgbPercentBase();
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             float[] cfvals = new float[3];
             for (int i = 0; i < 3; i++)
@@ -43,7 +43,7 @@ namespace Fonet.Fo.Expr
 
         }
 
-        internal class RGBPercentBase : IPercentBase
+        internal class RgbPercentBase : IPercentBase
         {
             public int GetDimension()
             {

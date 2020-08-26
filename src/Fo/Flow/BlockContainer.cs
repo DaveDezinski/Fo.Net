@@ -5,15 +5,15 @@ namespace Fonet.Fo.Flow
 
     internal class BlockContainer : FObj
     {
-        private int position;
-        private int top;
-        private int bottom;
-        private int left;
-        private int right;
-        private int width;
-        private int height;
-        private int span;
-        private AreaContainer areaContainer;
+        private int _position;
+        private int _top;
+        private int _bottom;
+        private int _left;
+        private int _right;
+        private int _width;
+        private int _height;
+        private int _span;
+        private AreaContainer _areaContainer;
 
         new internal class Maker : FObj.Maker
         {
@@ -32,7 +32,7 @@ namespace Fonet.Fo.Flow
             : base(parent, propertyList)
         {
             this.name = "fo:block-container";
-            this.span = this.properties.GetProperty("span").GetEnum();
+            this._span = this.properties.GetProperty("span").GetEnum();
         }
 
         public override Status Layout(Area area)
@@ -42,17 +42,15 @@ namespace Fonet.Fo.Flow
                 AbsolutePositionProps mAbsProps = propMgr.GetAbsolutePositionProps();
                 BorderAndPadding bap = propMgr.GetBorderAndPadding();
                 BackgroundProps bProps = propMgr.GetBackgroundProps();
-                MarginProps mProps = propMgr.GetMarginProps();
-
-                this.marker = 0;
-                this.position = this.properties.GetProperty("position").GetEnum();
-                this.top = this.properties.GetProperty("top").GetLength().MValue();
-                this.bottom = this.properties.GetProperty("bottom").GetLength().MValue();
-                this.left = this.properties.GetProperty("left").GetLength().MValue();
-                this.right = this.properties.GetProperty("right").GetLength().MValue();
-                this.width = this.properties.GetProperty("width").GetLength().MValue();
-                this.height = this.properties.GetProperty("height").GetLength().MValue();
-                span = this.properties.GetProperty("span").GetEnum();
+                MarginProps mProps = propMgr.GetMarginProps(); this.marker = 0;
+                this._position = this.properties.GetProperty("position").GetEnum();
+                this._top = this.properties.GetProperty("top").GetLength().MValue();
+                this._bottom = this.properties.GetProperty("bottom").GetLength().MValue();
+                this._left = this.properties.GetProperty("left").GetLength().MValue();
+                this._right = this.properties.GetProperty("right").GetLength().MValue();
+                this._width = this.properties.GetProperty("width").GetLength().MValue();
+                this._height = this.properties.GetProperty("height").GetLength().MValue();
+                _span = this.properties.GetProperty("span").GetEnum();
 
                 string id = this.properties.GetProperty("id").GetString();
                 area.getIDReferences().InitializeID(id, area);
@@ -61,56 +59,56 @@ namespace Fonet.Fo.Flow
             AreaContainer container;
             // Apply fix proposed by claytonrumley
             // on http://fonet.codeplex.com/workitem/4647
-            if (area is BlockArea)
+            if (area is BlockArea area1)
             {
-                container = ((BlockArea)area).getNearestAncestorAreaContainer();
+                container = area1.getNearestAncestorAreaContainer();
             }
             else
             {
                 container = (AreaContainer)area;
             } 
-            if ((this.width == 0) && (this.height == 0))
+            if ((this._width == 0) && (this._height == 0))
             {
-                width = right - left;
-                height = bottom - top;
+                _width = _right - _left;
+                _height = _bottom - _top;
             }
 
-            this.areaContainer =
+            this._areaContainer =
                 new AreaContainer(propMgr.GetFontState(container.getFontInfo()),
-                                  container.getXPosition() + left,
-                                  container.GetYPosition() - top, width, height,
-                                  position);
+                                  container.getXPosition() + _left,
+                                  container.GetYPosition() - _top, _width, _height,
+                                  _position);
 
-            areaContainer.setPage(area.getPage());
-            areaContainer.setBackground(propMgr.GetBackgroundProps());
-            areaContainer.setBorderAndPadding(propMgr.GetBorderAndPadding());
-            areaContainer.start();
+            _areaContainer.setPage(area.getPage());
+            _areaContainer.setBackground(propMgr.GetBackgroundProps());
+            _areaContainer.setBorderAndPadding(propMgr.GetBorderAndPadding());
+            _areaContainer.start();
 
-            areaContainer.setAbsoluteHeight(0);
-            areaContainer.setIDReferences(area.getIDReferences());
+            _areaContainer.setAbsoluteHeight(0);
+            _areaContainer.setIDReferences(area.getIDReferences());
 
             int numChildren = this.children.Count;
             for (int i = this.marker; i < numChildren; i++)
             {
                 FObj fo = (FObj)children[i];
-                Status status = fo.Layout(areaContainer);
+                fo.Layout(_areaContainer);
             }
 
-            areaContainer.end();
-            if (position == Position.ABSOLUTE)
+            _areaContainer.end();
+            if (_position == Position.ABSOLUTE)
             {
-                areaContainer.SetHeight(height);
+                _areaContainer.SetHeight(_height);
             }
-            area.addChild(areaContainer);
+            area.addChild(_areaContainer);
 
             return new Status(Status.OK);
         }
 
         public override int GetContentWidth()
         {
-            if (areaContainer != null)
+            if (_areaContainer != null)
             {
-                return areaContainer.getContentWidth();
+                return _areaContainer.getContentWidth();
             }
             else
             {
@@ -125,7 +123,7 @@ namespace Fonet.Fo.Flow
 
         public int GetSpan()
         {
-            return this.span;
+            return this._span;
         }
     }
 }

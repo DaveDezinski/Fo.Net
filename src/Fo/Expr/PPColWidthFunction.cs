@@ -12,14 +12,14 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             Number d = args[0].GetNumber();
             if (d == null)
             {
                 throw new PropertyException("Non number operand to proportional-column-width function");
             }
-            if (!pInfo.getPropertyList().GetElement().Equals("table-column"))
+            if (!propInfo.GetPropertyList().GetElement().Equals("table-column"))
             {
                 throw new PropertyException("proportional-column-width function may only be used on table-column FO");
             }

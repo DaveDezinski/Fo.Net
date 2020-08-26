@@ -10,14 +10,14 @@ namespace Fonet.DataTypes
         public const int CONTAINING_BOX = 3;
         public const int CONTAINING_REFAREA = 4;
         protected FObj parentFO;
-        private PropertyList propertyList;
-        private int iBaseType;
+        private readonly PropertyList _propertyList;
+        private readonly int _iBaseType;
 
         public LengthBase(FObj parentFO, PropertyList plist, int iBaseType)
         {
             this.parentFO = parentFO;
-            this.propertyList = plist;
-            this.iBaseType = iBaseType;
+            this._propertyList = plist;
+            this._iBaseType = iBaseType;
         }
 
         protected FObj GetParentFO()
@@ -25,9 +25,9 @@ namespace Fonet.DataTypes
             return parentFO;
         }
 
-        protected PropertyList getPropertyList()
+        protected PropertyList GetPropertyList()
         {
-            return propertyList;
+            return _propertyList;
         }
 
         public int GetDimension()
@@ -42,12 +42,12 @@ namespace Fonet.DataTypes
 
         public int GetBaseLength()
         {
-            switch (iBaseType)
+            switch (_iBaseType)
             {
                 case FONTSIZE:
-                    return propertyList.GetProperty("font-size").GetLength().MValue();
+                    return _propertyList.GetProperty("font-size").GetLength().MValue();
                 case INH_FONTSIZE:
-                    return propertyList.GetInheritedProperty("font-size").GetLength().MValue();
+                    return _propertyList.GetInheritedProperty("font-size").GetLength().MValue();
                 case CONTAINING_BOX:
                     return parentFO.GetContentWidth();
                 case CONTAINING_REFAREA:
@@ -56,7 +56,7 @@ namespace Fonet.DataTypes
                         for (fo = parentFO; fo != null && !fo.GeneratesReferenceAreas();
                             fo = fo.getParent())
                         {
-                            ;
+                            // Empty loop
                         }
                         return (fo != null ? fo.GetContentWidth() : 0);
                     }

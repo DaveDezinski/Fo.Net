@@ -1,6 +1,5 @@
 namespace Fonet.Fo.Flow
 {
-    using Fonet.Layout;
 
     internal class BidiOverride : ToBeImplementedElement
     {
@@ -22,7 +21,7 @@ namespace Fonet.Fo.Flow
         {
             this.name = "fo:bidi-override";
         }
-
+  
         public override Status Layout(Area area)
         {
             AuralProps mAurProps = propMgr.GetAuralProps();

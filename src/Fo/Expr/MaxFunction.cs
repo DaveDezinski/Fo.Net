@@ -10,7 +10,7 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             Numeric n1 = args[0].GetNumeric();
             Numeric n2 = args[1].GetNumeric();
@@ -18,7 +18,7 @@ namespace Fonet.Fo.Expr
             {
                 throw new PropertyException("Non numeric operands to max function");
             }
-            return new NumericProperty(n1.max(n2));
+            return new NumericProperty(n1.Max(n2));
         }
 
     }

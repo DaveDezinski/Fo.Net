@@ -147,7 +147,7 @@
     <Compile Include="DataTypes\ColorType.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataTypes\CompoundDataType.cs">
+    <Compile Include="DataTypes\ICompoundDataType.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataTypes\CondLength.cs">
@@ -189,7 +189,7 @@
     <Compile Include="DataTypes\Number.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataTypes\PercentBase.cs">
+    <Compile Include="DataTypes\IPercentBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataTypes\PercentLength.cs">
@@ -249,7 +249,7 @@
     <Compile Include="Fo\Expr\FromTableColumnFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Fo\Expr\Function.cs">
+    <Compile Include="Fo\Expr\IFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Fo\Expr\FunctionBase.cs">
@@ -294,7 +294,7 @@
     <Compile Include="Fo\Expr\PropertyTokenizer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Fo\Expr\RGBColorFunction.cs">
+    <Compile Include="Fo\Expr\RgbColorFunction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Fo\Expr\RoundFunction.cs">

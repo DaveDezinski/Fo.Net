@@ -25,7 +25,7 @@ namespace Fonet.DataTypes
         public ToBeImplementedProperty(string propName)
         {
             FonetDriver.ActiveDriver.FireFonetWarning(
-                "property - \"" + propName + "\" is not implemented yet.");
+                $"property - \"{propName}\" is not implemented yet.");
         }
 
     }

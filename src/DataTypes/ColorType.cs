@@ -142,13 +142,13 @@ namespace Fonet.DataTypes
                 else
                 {
                     bool found = false;
-                    for (int count = 0; count < names.Length; count++)
+                    for (int count = 0; count < _names.Length; count++)
                     {
-                        if (colorValue.Equals(names[count]))
+                        if (colorValue.Equals(_names[count]))
                         {
-                            Red = vals[count, 0] / 255f;
-                            Green = vals[count, 1] / 255f;
-                            Blue = vals[count, 2] / 255f;
+                            Red = _vals[count, 0] / 255f;
+                            Green = _vals[count, 1] / 255f;
+                            Blue = _vals[count, 2] / 255f;
                             found = true;
                             break;
                         }
@@ -178,7 +178,7 @@ namespace Fonet.DataTypes
             return new ColorType(Red, Green, Blue);
         }
 
-        private static readonly string[] names = {
+        private static readonly string[] _names = {
             "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige",
             "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown",
             "burlywood", "cadetblue", "chartreuse", "chocolate", "coral",
@@ -211,7 +211,7 @@ namespace Fonet.DataTypes
             "whitesmoke", "yellow", "yellowgreen"
         };
 
-        private static readonly int[,] vals = {
+        private static readonly int[,] _vals = {
             {240, 248, 255},
             {250, 235, 215},
             {0, 255, 255},

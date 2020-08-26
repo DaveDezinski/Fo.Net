@@ -17,7 +17,7 @@ namespace Fonet.Fo.Expr
             {
                 throw new PropertyException("Non numeric operand to abs function");
             }
-            return new NumericProperty(num.abs());
+            return new NumericProperty(num.Abs());
         }
 
     }

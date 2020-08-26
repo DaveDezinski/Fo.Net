@@ -12,11 +12,11 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
-            Numeric distance = pInfo.getPropertyList().GetProperty("provisional-distance-between-starts").GetNumeric();
+            Numeric distance = propInfo.GetPropertyList().GetProperty("provisional-distance-between-starts").GetNumeric();
 
-            FObj item = pInfo.getFO();
+            FObj item = propInfo.GetFO();
             while (item != null && !(item is ListItem))
             {
                 item = item.getParent();
@@ -29,7 +29,7 @@ namespace Fonet.Fo.Expr
             Numeric startIndent =
                 item.properties.GetProperty("start-indent").GetNumeric();
 
-            return new NumericProperty(distance.add(startIndent));
+            return new NumericProperty(distance.Add(startIndent));
         }
 
     }

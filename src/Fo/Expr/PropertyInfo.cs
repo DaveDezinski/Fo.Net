@@ -5,66 +5,66 @@ namespace Fonet.Fo.Expr
 {
     internal class PropertyInfo
     {
-        private PropertyMaker maker;
-        private PropertyList plist;
-        private FObj fo;
-        private Stack stkFunction;
+        private readonly PropertyMaker _maker;
+        private readonly PropertyList _plist;
+        private readonly FObj _fo;
+        private Stack _stkFunction;
 
         public PropertyInfo(PropertyMaker maker, PropertyList plist, FObj fo)
         {
-            this.maker = maker;
-            this.plist = plist;
-            this.fo = fo;
+            this._maker = maker;
+            this._plist = plist;
+            this._fo = fo;
         }
 
-        public bool inheritsSpecified()
+        public bool InheritsSpecified()
         {
-            return maker.InheritsSpecified();
+            return _maker.InheritsSpecified();
         }
 
         public IPercentBase GetPercentBase()
         {
-            IPercentBase pcbase = getFunctionPercentBase();
-            return (pcbase != null) ? pcbase : maker.GetPercentBase(fo, plist);
+            IPercentBase pcbase = GetFunctionPercentBase();
+            return pcbase ?? _maker.GetPercentBase(_fo, _plist);
         }
 
-        public int currentFontSize()
+        public int CurrentFontSize()
         {
-            return plist.GetProperty("font-size").GetLength().MValue();
+            return _plist.GetProperty("font-size").GetLength().MValue();
         }
 
-        public FObj getFO()
+        public FObj GetFO()
         {
-            return fo;
+            return _fo;
         }
 
-        public PropertyList getPropertyList()
+        public PropertyList GetPropertyList()
         {
-            return plist;
+            return _plist;
         }
 
-        public void pushFunction(IFunction func)
+        public void PushFunction(IFunction func)
         {
-            if (stkFunction == null)
+            if (_stkFunction == null)
             {
-                stkFunction = new Stack();
+                _stkFunction = new Stack();
             }
-            stkFunction.Push(func);
+            _stkFunction.Push(func);
         }
 
-        public void popFunction()
+        public void PopFunction()
         {
-            if (stkFunction != null)
+            if (_stkFunction != null)
             {
-                stkFunction.Pop();
+                _stkFunction.Pop();
             }
         }
 
-        private IPercentBase getFunctionPercentBase()
+        private IPercentBase GetFunctionPercentBase()
         {
-            if (stkFunction != null)
+            if (_stkFunction != null)
             {
-                IFunction f = (IFunction)stkFunction.Peek();
+                IFunction f = (IFunction)_stkFunction.Peek();
                 if (f != null)
                 {
                     return f.GetPercentBase();

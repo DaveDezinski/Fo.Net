@@ -58,7 +58,7 @@ namespace Fonet.Fo.Flow
             int leaderLengthMaximum;
             if (maxlength is PercentLength)
             {
-                leaderLengthMaximum = (int)(((PercentLength)maxlength).value()
+                leaderLengthMaximum = (int)(((PercentLength)maxlength).Value()
                     * area.getAllocationWidth());
             }
             else

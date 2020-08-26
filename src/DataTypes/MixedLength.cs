@@ -1,24 +1,24 @@
 namespace Fonet.DataTypes
 {
     using System;
-    using System.Collections;
+    using System.Collections.Generic;
     using System.Text;
     using Fonet.Fo.Expr;
 
     internal class MixedLength : Length
     {
-        private ArrayList lengths;
+        private readonly List<Length> _lengths;
 
-        public MixedLength(ArrayList lengths)
+        public MixedLength(List<Length> lengths)
         {
-            this.lengths = lengths;
+            this._lengths = lengths;
         }
 
         public override void ComputeValue()
         {
             int computedValue = 0;
             bool bAllComputed = true;
-            foreach (Length l in lengths)
+            foreach (Length l in _lengths)
             {
                 computedValue += l.MValue();
                 if (!l.IsComputed())
@@ -32,7 +32,7 @@ namespace Fonet.DataTypes
         public override double GetTableUnits()
         {
             double tableUnits = 0.0;
-            foreach (Length l in lengths)
+            foreach (Length l in _lengths)
             {
                 tableUnits += l.GetTableUnits();
             }
@@ -41,7 +41,7 @@ namespace Fonet.DataTypes
 
         public override void ResolveTableUnit(double dTableUnit)
         {
-            foreach (Length l in lengths)
+            foreach (Length l in _lengths)
             {
                 l.ResolveTableUnit(dTableUnit);
             }
@@ -50,7 +50,7 @@ namespace Fonet.DataTypes
         public override string ToString()
         {
             StringBuilder sbuf = new StringBuilder();
-            foreach (Length l in lengths)
+            foreach (Length l in _lengths)
             {
                 if (sbuf.Length > 0)
                 {
@@ -64,7 +64,7 @@ namespace Fonet.DataTypes
         public override Numeric AsNumeric()
         {
             Numeric numeric = null;
-            foreach (Length l in lengths)
+            foreach (Length l in _lengths)
             {
                 if (numeric == null)
                 {
@@ -74,7 +74,7 @@ namespace Fonet.DataTypes
                 {
                     try
                     {
-                        Numeric sum = numeric.add(l.AsNumeric());
+                        Numeric sum = numeric.Add(l.AsNumeric());
                         numeric = sum;
                     }
                     catch (PropertyException pe)

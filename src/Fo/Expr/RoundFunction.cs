@@ -13,7 +13,7 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        public override Property Eval(Property[] args, PropertyInfo pInfo)
+        public override Property Eval(Property[] args, PropertyInfo propInfo)
         {
             Number dbl = args[0].GetNumber();
             if (dbl == null)

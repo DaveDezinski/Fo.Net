@@ -176,7 +176,7 @@ namespace Fonet.Fo
                 if (pret == null)
                 {
                     pvalue = CheckValueKeywords(value);
-                    Property p = PropertyParser.parse(pvalue,
+                    Property p = PropertyParser.Parse(pvalue,
                                                       new PropertyInfo(this,
                                                                        propertyList, fo));
                     pret = ConvertProperty(p, propertyList, fo);
@@ -220,7 +220,7 @@ namespace Fonet.Fo
                             if (!pvalue.Equals(sval))
                             {
                                 Property p =
-                                    PropertyParser.parse(pvalue,
+                                    PropertyParser.Parse(pvalue,
                                                          new PropertyInfo(this,
                                                                           propertyList,
                                                                           fo));

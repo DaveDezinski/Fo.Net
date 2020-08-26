@@ -7,47 +7,47 @@ namespace Fonet.Fo.Expr
 {
     internal class PropertyParser : PropertyTokenizer
     {
-        private PropertyInfo propInfo;
-        private const string RELUNIT = "em";
-        private static Numeric negOne = new Numeric((decimal)-1.0);
-        private static Hashtable functionTable = new Hashtable();
+        private readonly PropertyInfo _propInfo;
+        private const string _rELUNIT = "em";
+        private static readonly Numeric _negOne = new Numeric((decimal)-1.0);
+        private static readonly Hashtable _functionTable = new Hashtable();
 
         static PropertyParser()
         {
-            functionTable.Add("ceiling", new CeilingFunction());
-            functionTable.Add("floor", new FloorFunction());
-            functionTable.Add("round", new RoundFunction());
-            functionTable.Add("min", new MinFunction());
-            functionTable.Add("max", new MaxFunction());
-            functionTable.Add("abs", new AbsFunction());
-            functionTable.Add("rgb", new RGBColorFunction());
-            functionTable.Add("from-table-column", new FromTableColumnFunction());
-            functionTable.Add("inherited-property-value",
+            _functionTable.Add("ceiling", new CeilingFunction());
+            _functionTable.Add("floor", new FloorFunction());
+            _functionTable.Add("round", new RoundFunction());
+            _functionTable.Add("min", new MinFunction());
+            _functionTable.Add("max", new MaxFunction());
+            _functionTable.Add("abs", new AbsFunction());
+            _functionTable.Add("rgb", new RgbColorFunction());
+            _functionTable.Add("from-table-column", new FromTableColumnFunction());
+            _functionTable.Add("inherited-property-value",
                               new InheritedPropFunction());
-            functionTable.Add("from-parent", new FromParentFunction());
-            functionTable.Add("from-nearest-specified-value",
+            _functionTable.Add("from-parent", new FromParentFunction());
+            _functionTable.Add("from-nearest-specified-value",
                               new NearestSpecPropFunction());
-            functionTable.Add("proportional-column-width",
+            _functionTable.Add("proportional-column-width",
                               new PPColWidthFunction());
-            functionTable.Add("label-end", new LabelEndFunction());
-            functionTable.Add("body-start", new BodyStartFunction());
-            functionTable.Add("_fop-property-value", new FonetPropValFunction());
+            _functionTable.Add("label-end", new LabelEndFunction());
+            _functionTable.Add("body-start", new BodyStartFunction());
+            _functionTable.Add("_fop-property-value", new FonetPropValFunction());
         }
 
-        public static Property parse(string expr, PropertyInfo propInfo)
+        public static Property Parse(string expr, PropertyInfo propInfo)
         {
-            return new PropertyParser(expr, propInfo).parseProperty();
+            return new PropertyParser(expr, propInfo).ParseProperty();
         }
 
         private PropertyParser(string propExpr, PropertyInfo pInfo)
             : base(propExpr)
         {
-            this.propInfo = pInfo;
+            this._propInfo = pInfo;
         }
 
-        private Property parseProperty()
+        private Property ParseProperty()
         {
-            next();
+            Next();
             if (currentToken == TOK_EOF)
             {
                 return new StringProperty("");
@@ -55,7 +55,7 @@ namespace Fonet.Fo.Expr
             ListProperty propList = null;
             while (true)
             {
-                Property prop = parseAdditiveExpr();
+                Property prop = ParseAdditiveExpr();
                 if (currentToken == TOK_EOF)
                 {
                     if (propList != null)
@@ -82,24 +82,24 @@ namespace Fonet.Fo.Expr
             }
         }
 
-        private Property parseAdditiveExpr()
+        private Property ParseAdditiveExpr()
         {
-            Property prop = parseMultiplicativeExpr();
+            Property prop = ParseMultiplicativeExpr();
             bool cont = true;
             while (cont)
             {
                 switch (currentToken)
                 {
                     case TOK_PLUS:
-                        next();
-                        prop = evalAddition(prop.GetNumeric(),
-                                            parseMultiplicativeExpr().GetNumeric());
+                        Next();
+                        prop = EvalAddition(prop.GetNumeric(),
+                                            ParseMultiplicativeExpr().GetNumeric());
                         break;
                     case TOK_MINUS:
-                        next();
+                        Next();
                         prop =
-                            evalSubtraction(prop.GetNumeric(),
-                                            parseMultiplicativeExpr().GetNumeric());
+                            EvalSubtraction(prop.GetNumeric(),
+                                            ParseMultiplicativeExpr().GetNumeric());
                         break;
                     default:
                         cont = false;
@@ -109,28 +109,28 @@ namespace Fonet.Fo.Expr
             return prop;
         }
 
-        private Property parseMultiplicativeExpr()
+        private Property ParseMultiplicativeExpr()
         {
-            Property prop = parseUnaryExpr();
+            Property prop = ParseUnaryExpr();
             bool cont = true;
             while (cont)
             {
                 switch (currentToken)
                 {
                     case TOK_DIV:
-                        next();
-                        prop = evalDivide(prop.GetNumeric(),
-                                          parseUnaryExpr().GetNumeric());
+                        Next();
+                        prop = EvalDivide(prop.GetNumeric(),
+                                          ParseUnaryExpr().GetNumeric());
                         break;
                     case TOK_MOD:
-                        next();
-                        prop = evalModulo(prop.GetNumber(),
-                                          parseUnaryExpr().GetNumber());
+                        Next();
+                        prop = EvalModulo(prop.GetNumber(),
+                                          ParseUnaryExpr().GetNumber());
                         break;
                     case TOK_MULTIPLY:
-                        next();
-                        prop = evalMultiply(prop.GetNumeric(),
-                                            parseUnaryExpr().GetNumeric());
+                        Next();
+                        prop = EvalMultiply(prop.GetNumeric(),
+                                            ParseUnaryExpr().GetNumeric());
                         break;
                     default:
                         cont = false;
@@ -140,34 +140,34 @@ namespace Fonet.Fo.Expr
             return prop;
         }
 
-        private Property parseUnaryExpr()
+        private Property ParseUnaryExpr()
         {
             if (currentToken == TOK_MINUS)
             {
-                next();
-                return evalNegate(parseUnaryExpr().GetNumeric());
+                Next();
+                return EvalNegate(ParseUnaryExpr().GetNumeric());
             }
-            return parsePrimaryExpr();
+            return ParsePrimaryExpr();
         }
 
-        private void expectRpar()
+        private void ExpectRpar()
         {
             if (currentToken != TOK_RPAR)
             {
                 throw new PropertyException("expected )");
             }
-            next();
+            Next();
         }
 
-        private Property parsePrimaryExpr()
+        private Property ParsePrimaryExpr()
         {
             Property prop;
             switch (currentToken)
             {
                 case TOK_LPAR:
-                    next();
-                    prop = parseAdditiveExpr();
-                    expectRpar();
+                    Next();
+                    prop = ParseAdditiveExpr();
+                    ExpectRpar();
                     return prop;
 
                 case TOK_LITERAL:
@@ -189,7 +189,7 @@ namespace Fonet.Fo.Expr
                 case TOK_PERCENT:
                     double pcval = ParseDouble(
                         currentTokenValue.Substring(0, currentTokenValue.Length - 1)) / 100.0;
-                    IPercentBase pcBase = this.propInfo.GetPercentBase();
+                    IPercentBase pcBase = this._propInfo.GetPercentBase();
                     if (pcBase != null)
                     {
                         if (pcBase.GetDimension() == 0)
@@ -216,23 +216,18 @@ namespace Fonet.Fo.Expr
                     int numLen = currentTokenValue.Length - currentUnitLength;
                     string unitPart = currentTokenValue.Substring(numLen);
                     double numPart = ParseDouble(currentTokenValue.Substring(0, numLen));
-                    Length length = null;
-                    if (unitPart.Equals(RELUNIT))
+                    Length length;
+                    if (unitPart.Equals(_rELUNIT))
                     {
-                        length = new FixedLength(numPart, propInfo.currentFontSize());
+                        length = new FixedLength(numPart, _propInfo.CurrentFontSize());
                     }
                     else
                     {
                         length = new FixedLength(numPart, unitPart);
                     }
-                    if (length == null)
-                    {
-                        throw new PropertyException("unrecognized unit name: " + currentTokenValue);
-                    }
-                    else
-                    {
-                        prop = new LengthProperty(length);
-                    }
+                    
+                    prop = new LengthProperty(length);
+                    
                     break;
 
                 case TOK_COLORSPEC:
@@ -242,39 +237,39 @@ namespace Fonet.Fo.Expr
                 case TOK_FUNCTION_LPAR:
                     {
                         IFunction function =
-                            (IFunction)functionTable[currentTokenValue];
+                            (IFunction)_functionTable[currentTokenValue];
                         if (function == null)
                         {
                             throw new PropertyException("no such function: "
                                 + currentTokenValue);
                         }
-                        next();
-                        propInfo.pushFunction(function);
-                        prop = function.Eval(parseArgs(function.NumArgs), propInfo);
-                        propInfo.popFunction();
+                        Next();
+                        _propInfo.PushFunction(function);
+                        prop = function.Eval(ParseArgs(function.NumArgs), _propInfo);
+                        _propInfo.PopFunction();
                         return prop;
                     }
                 default:
                     throw new PropertyException("syntax error");
             }
-            next();
+            Next();
             return prop;
         }
 
-        private Property[] parseArgs(int nbArgs)
+        private Property[] ParseArgs(int nbArgs)
         {
             Property[] args = new Property[nbArgs];
             Property prop;
             int i = 0;
             if (currentToken == TOK_RPAR)
             {
-                next();
+                Next();
             }
             else
             {
                 while (true)
                 {
-                    prop = parseAdditiveExpr();
+                    prop = ParseAdditiveExpr();
                     if (i < nbArgs)
                     {
                         args[i++] = prop;
@@ -283,9 +278,9 @@ namespace Fonet.Fo.Expr
                     {
                         break;
                     }
-                    next();
+                    Next();
                 }
-                expectRpar();
+                ExpectRpar();
             }
             if (nbArgs != i)
             {
@@ -294,52 +289,52 @@ namespace Fonet.Fo.Expr
             return args;
         }
 
-        private Property evalAddition(Numeric op1, Numeric op2)
+        private Property EvalAddition(Numeric op1, Numeric op2)
         {
             if (op1 == null || op2 == null)
             {
                 throw new PropertyException("Non numeric operand in addition");
             }
-            return new NumericProperty(op1.add(op2));
+            return new NumericProperty(op1.Add(op2));
         }
 
-        private Property evalSubtraction(Numeric op1, Numeric op2)
+        private Property EvalSubtraction(Numeric op1, Numeric op2)
         {
             if (op1 == null || op2 == null)
             {
                 throw new PropertyException("Non numeric operand in subtraction");
             }
-            return new NumericProperty(op1.subtract(op2));
+            return new NumericProperty(op1.Subtract(op2));
         }
 
-        private Property evalNegate(Numeric op)
+        private Property EvalNegate(Numeric op)
         {
             if (op == null)
             {
                 throw new PropertyException("Non numeric operand to unary minus");
             }
-            return new NumericProperty(op.multiply(negOne));
+            return new NumericProperty(op.Multiply(_negOne));
         }
 
-        private Property evalMultiply(Numeric op1, Numeric op2)
+        private Property EvalMultiply(Numeric op1, Numeric op2)
         {
             if (op1 == null || op2 == null)
             {
                 throw new PropertyException("Non numeric operand in multiplication");
             }
-            return new NumericProperty(op1.multiply(op2));
+            return new NumericProperty(op1.Multiply(op2));
         }
 
-        private Property evalDivide(Numeric op1, Numeric op2)
+        private Property EvalDivide(Numeric op1, Numeric op2)
         {
             if (op1 == null || op2 == null)
             {
                 throw new PropertyException("Non numeric operand in division");
             }
-            return new NumericProperty(op1.divide(op2));
+            return new NumericProperty(op1.Divide(op2));
         }
 
-        private Property evalModulo(Number op1, Number op2)
+        private Property EvalModulo(Number op1, Number op2)
         {
             if (op1 == null || op2 == null)
             {

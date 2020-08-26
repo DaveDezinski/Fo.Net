@@ -4,44 +4,44 @@ namespace Fonet.DataTypes
 {
     internal class Keep : ICompoundDatatype
     {
-        private Property withinLine;
+        private Property _withinLine;
 
-        private Property withinColumn;
+        private Property _withinColumn;
 
-        private Property withinPage;
+        private Property _withinPage;
 
         public Keep()
         {
         }
 
-        public void SetComponent(string sCmpnName, Property cmpnValue,
-                                 bool bIsDefault)
+        public void SetComponent(string componentName, Property componentValue,
+                                 bool isDefault)
         {
-            if (sCmpnName.Equals("within-line"))
+            if (componentName.Equals("within-line"))
             {
-                setWithinLine(cmpnValue, bIsDefault);
+                setWithinLine(componentValue, isDefault);
             }
-            else if (sCmpnName.Equals("within-column"))
+            else if (componentName.Equals("within-column"))
             {
-                setWithinColumn(cmpnValue, bIsDefault);
+                setWithinColumn(componentValue, isDefault);
             }
-            else if (sCmpnName.Equals("within-page"))
+            else if (componentName.Equals("within-page"))
             {
-                setWithinPage(cmpnValue, bIsDefault);
+                setWithinPage(componentValue, isDefault);
             }
         }
 
-        public Property GetComponent(string sCmpnName)
+        public Property GetComponent(string componentName)
         {
-            if (sCmpnName.Equals("within-line"))
+            if (componentName.Equals("within-line"))
             {
                 return getWithinLine();
             }
-            else if (sCmpnName.Equals("within-column"))
+            else if (componentName.Equals("within-column"))
             {
                 return getWithinColumn();
             }
-            else if (sCmpnName.Equals("within-page"))
+            else if (componentName.Equals("within-page"))
             {
                 return getWithinPage();
             }
@@ -53,33 +53,33 @@ namespace Fonet.DataTypes
 
         public void setWithinLine(Property withinLine, bool bIsDefault)
         {
-            this.withinLine = withinLine;
+            this._withinLine = withinLine;
         }
 
         protected void setWithinColumn(Property withinColumn,
                                        bool bIsDefault)
         {
-            this.withinColumn = withinColumn;
+            this._withinColumn = withinColumn;
         }
 
         public void setWithinPage(Property withinPage, bool bIsDefault)
         {
-            this.withinPage = withinPage;
+            this._withinPage = withinPage;
         }
 
         public Property getWithinLine()
         {
-            return this.withinLine;
+            return this._withinLine;
         }
 
         public Property getWithinColumn()
         {
-            return this.withinColumn;
+            return this._withinColumn;
         }
 
         public Property getWithinPage()
         {
-            return this.withinPage;
+            return this._withinPage;
         }
 
         public override string ToString()

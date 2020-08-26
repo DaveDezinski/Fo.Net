@@ -15,7 +15,7 @@ namespace Fonet.Fo.Flow
         protected RowSpanMgr rowSpanMgr;
         protected AreaContainer areaContainer;
 
-        public AbstractTableBody(FObj parent, PropertyList propertyList) : base(parent, propertyList)
+        protected AbstractTableBody(FObj parent, PropertyList propertyList) : base(parent, propertyList)
         {
             if (!(parent is Table))
             {
@@ -63,15 +63,8 @@ namespace Fonet.Fo.Flow
                 this.spaceAfter = this.properties.GetProperty("space-after.optimum").GetLength().MValue();
                 this.id = this.properties.GetProperty("id").GetString();
 
-                try
-                {
-                    area.getIDReferences().CreateID(id);
-                }
-                catch (FonetException e)
-                {
-                    throw e;
-                }
-
+                area.getIDReferences().CreateID(id);
+ 
                 if (area is BlockArea)
                 {
                     area.end();
@@ -119,9 +112,9 @@ namespace Fonet.Fo.Flow
             for (int i = this.marker; i < numChildren; i++)
             {
                 Object child = children[i];
-                if (child is Marker)
+                if (child is Marker marker1)
                 {
-                    ((Marker)child).Layout(area);
+                    marker1.Layout(area);
                     continue;
                 }
                 if (!(child is TableRow))
@@ -153,14 +146,11 @@ namespace Fonet.Fo.Flow
                 }
 
                 bool bRowStartsArea = (i == this.marker);
-                if (bRowStartsArea == false && keepWith.Count > 0)
+                if (!bRowStartsArea && keepWith.Count > 0 && children.IndexOf(keepWith[0]) == this.marker)
                 {
-                    if (children.IndexOf(keepWith[0]) == this.marker)
-                    {
-                        bRowStartsArea = true;
-                    }
+                    bRowStartsArea = true;
                 }
-                row.setIgnoreKeepTogether(bRowStartsArea && startsAC(area));
+                row.setIgnoreKeepTogether(bRowStartsArea && StartsAC(area));
                 Status status = row.Layout(areaContainer);
                 if (status.isIncomplete())
                 {
@@ -266,15 +256,15 @@ namespace Fonet.Fo.Flow
             this.RemoveID(area.getIDReferences());
         }
 
-        private bool startsAC(Area area)
+        private bool StartsAC(Area area)
         {
-            Area parent = null;
+            Area parent;
 
             while ((parent = area.getParent()) != null &&
-                parent.hasNonSpaceChildren() == false)
+                !parent.hasNonSpaceChildren())
             {
-                if (parent is AreaContainer &&
-                    ((AreaContainer)parent).getPosition() == Position.ABSOLUTE)
+                if (parent is AreaContainer container &&
+                    container.getPosition() == Position.ABSOLUTE)
                 {
                     return true;
                 }

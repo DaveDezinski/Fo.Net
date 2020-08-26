@@ -25,15 +25,15 @@ namespace Fonet.DataTypes
 
             if (unit.Equals("in"))
             {
-                dvalue = dvalue * 72;
+                dvalue *= 72;
             }
             else if (unit.Equals("cm"))
             {
-                dvalue = dvalue * 28.3464567;
+                dvalue *= 28.3464567;
             }
             else if (unit.Equals("mm"))
             {
-                dvalue = dvalue * 2.83464567;
+                dvalue *= 2.83464567;
             }
             else if (unit.Equals("pt"))
             {
@@ -41,17 +41,17 @@ namespace Fonet.DataTypes
             }
             else if (unit.Equals("pc"))
             {
-                dvalue = dvalue * 12;
+                dvalue *= 12;
             }
             else if (unit.Equals("px"))
             {
-                dvalue = dvalue * assumed_resolution;
+                dvalue *= assumed_resolution;
             }
             else
             {
                 dvalue = 0;
                 FonetDriver.ActiveDriver.FireFonetError(
-                    "Unknown length unit '" + unit + "'");
+                    $"Unknown length unit '{unit}'");
             }
             SetComputedValue((int)(dvalue * 1000));
         }

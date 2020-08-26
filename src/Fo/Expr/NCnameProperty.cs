@@ -4,26 +4,26 @@ namespace Fonet.Fo.Expr
 {
     internal class NCnameProperty : Property
     {
-        private string ncName;
+        private readonly string _ncName;
 
         public NCnameProperty(string ncName)
         {
-            this.ncName = ncName;
+            this._ncName = ncName;
         }
 
-        public ColorType getColor()
+        public ColorType GetColor()
         {
             throw new PropertyException("Not a Color");
         }
 
         public override string GetString()
         {
-            return this.ncName;
+            return this._ncName;
         }
 
         public override string GetNCname()
         {
-            return this.ncName;
+            return this._ncName;
         }
 
     }

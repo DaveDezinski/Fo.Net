@@ -4,26 +4,26 @@ namespace Fonet.Fo.Expr
 {
     internal class NumericProperty : Property
     {
-        private Numeric numeric;
+        private readonly Numeric _numeric;
 
         internal NumericProperty(Numeric value)
         {
-            this.numeric = value;
+            _numeric = value;
         }
 
         public override Numeric GetNumeric()
         {
-            return this.numeric;
+            return _numeric;
         }
 
         public override Number GetNumber()
         {
-            return numeric.asNumber();
+            return _numeric.AsNumber();
         }
 
         public override Length GetLength()
         {
-            return numeric.asLength();
+            return _numeric.AsLength();
         }
 
         public override ColorType GetColorType()
@@ -33,7 +33,7 @@ namespace Fonet.Fo.Expr
 
         public override object GetObject()
         {
-            return this.numeric;
+            return _numeric;
         }
 
     }
